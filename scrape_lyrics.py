@@ -17,6 +17,9 @@ from datetime import datetime, timedelta, date
 from dateutil.relativedelta import relativedelta
 from bs4 import BeautifulSoup
 import requests, json
+import pandas as pd
+from tqdm import tqdm
+import csv
 
 #-------------------------
 # Globals
@@ -49,14 +52,35 @@ def scrape_genius_lyrics(artist_name, song_name):
 		return lyrics
 	else:
 		print "ERROR: Lyrics on genius not found!"
+		
 		return None
 
 # Main function
 def main():
 	print "Scraping lyrics"
 
-	# 1.) Get song lyrics
-	genius_song_lyrics = scrape_genius_lyrics("led zeppelin", "stairway to heaven")
+	myfile = open('lyrics.csv', 'wb')
+	wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
+
+	wr.writerow(['id','lyrics'])
+
+	info = pd.read_csv('info.csv', header = 0, names = ['id', 'title','artist'])
+
+	successes = 0
+
+	for index, row in tqdm(info.iterrows()):
+		# 1.) Get song lyrics
+		genius_song_lyrics = scrape_genius_lyrics(row['artist'].lower(), row['title'].lower())
+		if genius_song_lyrics != None:
+			successes += 1
+			wr.writerow([row['id'],genius_song_lyrics.encode('utf-8')])
+		else:
+			wr.writerow([row['id']])
+
+	print "Finished sraping lyrics. Lyrics found for " + str(float(successes)/float(10000))*100 + " percent of songs."
+
+
+
 
 if __name__=="__main__":
     main()
