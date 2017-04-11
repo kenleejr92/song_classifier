@@ -47,25 +47,30 @@ def save_results(predictions,IDs,  filename):
             f.write("%d,%f\n" % (IDs[i], pred))
 
 
-def bagged_set(X_t,y_c,model, myseed, estimators, xt, update_seed=True):
+#X_train,y_train,model, SEED , bagging, X_cv, update_seed=True
+
+def train_and_predict(X_train,y_train,model, myseed, bags, X_cv, update_seed=True):
     
    # create array object to hold predictions 
-   baggedpred=[ 0.0  for d in range(0, (xt.shape[0]))]
+   baggedpred=[ 0.0  for d in range(0, (X_cv.shape[0]))]
    #loop for as many times as we want bags
-   for n in range (0, estimators):
+   for n in range (0, bags):
         #shuff;e first, aids in increasing variance and forces different results
-        #X_t,y_c=shuffle(Xs,ys, random_state=seed+n)
+        #UPDATE THE TWO LINES BELOW SO THAT IT USES BAGGING
+        X_train_2 = X_train
+        y_train_2 = y_train
+        #X_train,y_train=shuffle(Xs,ys, random_state=seed+n)
           
         if update_seed: # update seed if requested, to give a slightly different model
             model.set_params(seed=myseed + n)
-        model.fit(X_t,y_c) # fit model0.0917411475506
-        preds=model.predict_proba(xt)[:,1] # predict probabilities
+        model.fit(X_train_2,y_train_2) # fit model0.0917411475506
+        preds=model.predict_proba(X_cv)[:,1] # predict probabilities
         # update bag's array
                  
         baggedpred+=preds
-   # divide with number of bags to create an average estimate            
+   # divide with number of bags to create an average estimate           
    
-   baggedpred = np.true_divide(baggedpred,float(estimators))
+   baggedpred = np.true_divide(baggedpred,float(bags))
    # return probabilities            
    return np.array(baggedpred) 
    
@@ -140,7 +145,7 @@ def main():
         # optimization, this is where you want to do it
 
         # train model and make predictions 
-        preds=bagged_set(X_train,y_train,model, SEED , bagging, X_cv, update_seed=True)   
+        preds=train_and_predict(X_train,y_train,model, SEED , bagging, X_cv, update_seed=True)   
         
 
         # compute AUC metric for this CV fold
@@ -162,7 +167,7 @@ def main():
 
     # === Predictions === #
     # When making predictions, retrain the model on the whole training set
-    preds=bagged_set(X, y,model, SEED, bagging, X_test, update_seed=True)  
+    preds=train_and_predict(X, y,model, SEED, bagging, X_test, update_seed=True)  
 
 
     #create test predictions file to be used in stacking
