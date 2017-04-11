@@ -70,7 +70,7 @@ def main():
 
 	for index, row in tqdm(info.iterrows()):
 		# 1.) Get song lyrics
-		genius_song_lyrics = scrape_genius_lyrics(row['artist'].lower(), row['title'].lower())
+		genius_song_lyrics = scrape_genius_lyrics(row['artist'], row['title'])
 		if genius_song_lyrics != None:
 			successes += 1
 			wr.writerow([row['id'],genius_song_lyrics.encode('utf-8')])
