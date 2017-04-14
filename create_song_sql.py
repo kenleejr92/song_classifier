@@ -41,3 +41,4 @@ connection.commit()
 # close sql connection
 cursor.close()
 connection.close()
+
