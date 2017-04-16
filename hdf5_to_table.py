@@ -3,13 +3,23 @@ import hdf5_getters
 import csv
 from tqdm import tqdm
 
+DEBUG = 1
 
 mylist = dir(hdf5_getters)
 
+#Change this path to wherever you have saved the subset
+path_to_data_folder = '/Users/andrew/Documents/datamining/Project/MillionSongSubset'
 
+def add_sample_to_table(sample):
+	#sample is a list of all the features of a song
+	#Your code goes here
+	print sample
 
+if DEBUG == 1:
+	glob_path = path_to_data_folder + '/data/A/A/A/*'
+else:
+	glob_path = path_to_data_folder + '/data/*/*/*/*'
 
-glob_path = '/Users/andrew/Documents/datamining/Project/MillionSongSubset/data/A/A/A/*'
 filepaths = glob.glob(glob_path)
 for filepath in tqdm(filepaths):
 	h5 = hdf5_getters.open_h5_file_read(filepath)
@@ -23,13 +33,8 @@ for filepath in tqdm(filepaths):
 			myfunc = "feature = hdf5_getters." + mylist[i] + "(h5,songidx=row)"
 			exec myfunc
 			info.append(feature)
-		#print info
+		add_sample_to_table(info)
 
 	h5.close()
-
-for i in range(54):
-	offset = 6
-	print i+offset, ":", mylist[i+offset]
-	print info[i]
 
 
