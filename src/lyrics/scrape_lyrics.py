@@ -38,6 +38,12 @@ azheaders = { 'User-Agent': 'Mozilla/5.0 (Windows NT 6.0; WOW64; rv:24.0) Gecko/
 # Functions
 #-------------------------
 
+# Parse the lyrcis to remove [] phrases and crap
+def parse_lyrics(lyrics):
+	lyrics = re.sub(r"\[.*\]", "", lyrics).lstrip()	# Remove the brackets from the lyrics and preliminary spaces
+	print lyrics
+	return lyrics
+
 # Trim artist and song
 def trim_song_info(artist_name, song_name):
 	artist_name = "".join(c for c in unicodedata.normalize('NFD', artist_name) if unicodedata.category(c) != "Mn")
@@ -45,6 +51,9 @@ def trim_song_info(artist_name, song_name):
 
 	artist_name = re.sub('[^0-9a-zA-Z\w\s]+', '', artist_name)
 	song_name = re.sub('[^0-9a-zA-Z\w\s]+', '', song_name)
+
+	artist_name = artist_name.lower()
+	song_name = song_name.lower()
 
 	return (artist_name, song_name)
 
@@ -65,13 +74,9 @@ def scrape_genius_lyrics(artist_name, song_name):
 	doc = BeautifulSoup(html.text, 'html.parser')
 	lyrics_div = doc.find_all('lyrics', {"class" : "lyrics"})
 	if lyrics_div and len(lyrics_div) > 0:
-		lyrics = lyrics_div[0].text
-		lyrics = re.sub(r"\[.*\]", "", lyrics).lstrip()	# Remove the brackets from the lyrics and preliminary spaces
-		print lyrics
-		return lyrics
+		return parse_lyrics(lyrics_div[0].text)
 	else:
-		print "ERROR: Lyrics on genius not found!"
-		
+		print "LYRICS NOT FOUND"
 		return None
 
 def build_az_lryics(artist_name, song_name):
@@ -98,17 +103,32 @@ def scrape_az_lyrics(artist_name, song_name):
 			break
 	lyrics_div = lyrics_divs[idx+1]
 
-	print lyrics_div.text
-	# if lyrics_div and len(lyrics_div) > 0:
-	# 	lyrics = lyrics_div[0].text
-	# 	lyrics = re.sub(r"\[.*\]", "", lyrics).lstrip()	# Remove the brackets from the lyrics and preliminary spaces
-	# 	print lyrics
-	# 	return lyrics
-	# else:
-	# 	print "ERROR: Lyrics on genius not found!"
-		
-	# 	return None
+	if lyrics_div:
+		return parse_lyrics(lyrics_div.text)
+	else:
+		print "LYRICS NOT FOUND"
+		return None
 
+# Build metro url
+def build_metro_url(artist_name, song_name):
+	return "http://www.metrolyrics.com/"+song_name.replace(" ", "-")+"-lyrics-"+artist_name.replace(" ", "-")+".html"
+
+
+# Scrape metro lyrics
+def scrape_metro_lyrics(artist_name, song_name):
+	song_url = build_metro_url(artist_name, song_name)
+	print "Song URL = %s\n"%(song_url)
+
+	html = requests.get(song_url, headers=azheaders)
+	doc = BeautifulSoup(html.text, 'html.parser')
+
+	lyrics_div = doc.find("div", {"id" : "lyrics-body-text"})
+
+	if lyrics_div:
+		return parse_lyrics(lyrics_div.text)
+	else:
+		print "LYRICS NOT FOUND"
+		return None
 
 # Main function
 def get_from_csv():
@@ -142,8 +162,11 @@ def get_from_csv():
 def main():
 	print "Scraping lyrics"
 
-	artist = u"Flávio José"
-	song = u"É Sempre Assim"
+	# artist = u"Flávio José"
+	# song = u"É Sempre Assim"
+
+	artist = u"Snoop Dogg"
+	song = u"Gin and Juice"
 
 	(artist, song) = trim_song_info(artist, song)
 
@@ -160,6 +183,11 @@ def main():
 	print "AZ\n"
 	print "********************"
 	az_song_lyrics = scrape_az_lyrics(artist, song)
+
+	print "********************"
+	print "Metro\n"
+	print "********************"
+	az_song_lyrics = scrape_metro_lyrics(artist, song)
 
 
 if __name__=="__main__":
