@@ -17,8 +17,9 @@ import os, sys
 #	SQL environments
 #-------------------------
 
-HOST = "localhost:"
-DB = "db"
+#HOST = "localhost:"
+HOST = "ec2-54-209-131-130.compute-1.amazonaws.com:3306"
+DB = "songs"
 
 
 #-------------------------
@@ -29,7 +30,7 @@ make the connection to MySQL and
 execute the query to get mysql data
 """
 def execute_query(query):
-	connection = MySQLdb.connect(host=HOST, user='root', passwd="password", db=DB)
+	connection = MySQLdb.connect(host=HOST, user='root', passwd="root", db=DB)
 	cursor = connection.cursor()
 	cursor.execute(query)
 	data = cursor.fetchall()
@@ -39,7 +40,7 @@ def execute_query(query):
 	return data
 
 def execute_dict_query(query, db):
-	connection = MySQLdb.connect(host=HOST, user='root', passwd="password", db=DB)
+	connection = MySQLdb.connect(host=HOST, user='root', passwd="root", db=DB)
 	cursor = connection.cursor(MySQLdb.cursors.DictCursor)
 	cursor.execute(query)
 	data = cursor.fetchall()
