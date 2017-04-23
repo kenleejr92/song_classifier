@@ -1,0 +1,23 @@
+*.swp
+*.swo
+*.swn
+*.pyc
+*.DS_Store
+*.zip
+
+# nodejs gitignore
+*.seed
+*.log
+*.dat
+*.out
+*.pid
+*.gz
+
+*.temp
+target
+
+*.save
+.classpath
+.project
+.settings/
+
