@@ -24,6 +24,9 @@ import pandas as pd
 #from tqdm import tqdm
 import csv
 
+sys.path.append( os.path.realpath("%s/.."%os.path.dirname(__file__)) )
+from util import mysql_util
+
 #-------------------------
 # Globals
 #-------------------------

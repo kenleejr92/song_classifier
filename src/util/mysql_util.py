@@ -1,6 +1,12 @@
 """
 MySql utility file
 
+
+*** NOTE ***
+
+- MUST RUN 'sudo pip install MySQL-python' to install file
+- If getting error 'Import Error....Reason: image not found' type 'sudo ln -s /usr/local/mysql/lib/libmysqlclient.18.dylib /usr/local/lib/libmysqlclient.18.dylib'
+
 @author - Tim Mahler
 """
 
