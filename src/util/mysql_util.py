@@ -17,8 +17,14 @@ import os, sys
 #	SQL environments
 #-------------------------
 
-#HOST = "localhost:"
-HOST = "ec2-54-209-131-130.compute-1.amazonaws.com:3306"
+REMOTE = True	### CHANGE TO SWITCH BETWEEN LOCAL AND REMOTE
+
+
+HOST_LOCAL = "localhost:"
+HOST_REMOTE = "ec2-54-209-131-130.compute-1.amazonaws.com:3306"
+HOST = HOST_REMOTE if REMOTE else LOCAL
+
+
 DB = "songs"
 
 
