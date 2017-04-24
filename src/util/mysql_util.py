@@ -27,7 +27,7 @@ REMOTE = True	### CHANGE TO SWITCH BETWEEN LOCAL AND REMOTE
 
 
 HOST_LOCAL = "localhost:"
-HOST_REMOTE = "ec2-54-209-131-130.compute-1.amazonaws.com:3306"
+HOST_REMOTE = "54.209.131.130"
 HOST = HOST_REMOTE if REMOTE else LOCAL
 
 
@@ -42,7 +42,7 @@ make the connection to MySQL and
 execute the query to get mysql data
 """
 def execute_query(query):
-	connection = MySQLdb.connect(host=HOST, user='root', passwd="root", db=DB)
+	connection = MySQLdb.connect(host=HOST, user='root', passwd="root", db=DB, port=3306)
 	cursor = connection.cursor()
 	cursor.execute(query)
 	data = cursor.fetchall()
@@ -51,8 +51,8 @@ def execute_query(query):
 	connection.close()
 	return data
 
-def execute_dict_query(query, db):
-	connection = MySQLdb.connect(host=HOST, user='root', passwd="root", db=DB)
+def execute_dict_query(query):
+	connection = MySQLdb.connect(host=HOST, user='root', passwd="root", db=DB, port=3306)
 	cursor = connection.cursor(MySQLdb.cursors.DictCursor)
 	cursor.execute(query)
 	data = cursor.fetchall()

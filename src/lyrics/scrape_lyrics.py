@@ -38,6 +38,12 @@ azheaders = { 'User-Agent': 'Mozilla/5.0 (Windows NT 6.0; WOW64; rv:24.0) Gecko/
 # Functions
 #-------------------------
 
+# Get the artists from the table
+def get_songs():
+	q = "SELECT song_id, artist_name, song_name from songs;"
+
+	return mysql_util.execute_dict_query(q)
+
 # Parse the lyrcis to remove [] phrases and crap
 def parse_lyrics(lyrics):
 	lyrics = re.sub(r"\[.*\]", "", lyrics).lstrip()	# Remove the brackets from the lyrics and preliminary spaces
@@ -157,6 +163,13 @@ def get_from_csv():
 			wr.writerow([row['id']])
 
 	print "Finished sraping lyrics. Lyrics found for " + str(float(successes)/float(10000))*100 + " percent of songs."
+
+# Get from the database
+def get_from_db():
+
+	# Loop through each song in the db
+	for s in get_songs():
+		print s
 
 # Main function
 def main():
