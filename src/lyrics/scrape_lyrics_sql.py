@@ -68,7 +68,7 @@ def build_az_lryics(artist_name, song_name):
 # Scrape genius for lyrics
 def scrape_az_lyrics(artist_name, song_name):
 	song_url = build_az_lryics(artist_name, song_name)
-	print "Song URL = %s\n"%(song_url)
+	#print "Song URL = %s\n"%(song_url)
 
 	html = requests.get(song_url, headers=azheaders)
 
