@@ -42,15 +42,16 @@ for filepath in filepaths:
 
     for row in range(n):
         artist = hdf5_getters.get_artist_name(h5,songidx=row)
-        song_id = hdf5_getters.get_song_id(h5,songidx=row).decode('UTF-8')
+        song_id = hdf5_getters.get_song_id(h5,songidx=row)
         title= hdf5_getters.get_title(h5,songidx=row)
 
-        if type(artist) is unicode:
-            artist = artist.decode("utf8")
+        try:
+            song_id = song_id.decode('UTF-8')
 
-
-        artist = "".join(c for c in unicodedata.normalize('NFD', unicode(artist.decode("utf8"))) if unicodedata.category(c) != "Mn")
-        title = "".join(c for c in unicodedata.normalize('NFD', unicode(title.decode("utf8"))) if unicodedata.category(c) != "Mn")
+            artist = "".join(c for c in unicodedata.normalize('NFD', unicode(artist.decode("utf8"))) if unicodedata.category(c) != "Mn")
+            title = "".join(c for c in unicodedata.normalize('NFD', unicode(title.decode("utf8"))) if unicodedata.category(c) != "Mn")
+        except:
+            continue
 
         query = "INSERT INTO song_titles (songID, artist, title) VALUES ('%s', '%s', '%s')" % (song_id, artist.replace("'", ""), title.replace("'", ""))
         cursor.execute(query)
