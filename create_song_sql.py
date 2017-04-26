@@ -59,7 +59,7 @@ for filepath in filepaths:
         try:
             query = "INSERT INTO song_titles (songID, artist, title) VALUES ('%s', '%s', '%s')" % (song_id, artist, title)
             cursor.execute(query)
-        except mysql.connector.Error:
+        except:
             print "skipped song_id, artist, title"
             continue
 
