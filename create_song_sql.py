@@ -1,6 +1,6 @@
 """
 Create an SQL table for the Million Song Database: author and title only
-	- converts NFD text to utf8
+    - converts NFD text to utf8
 @author - Alan
 """
 import hdf5_getters
@@ -45,19 +45,19 @@ for filepath in tqdm(filepaths):
         title= hdf5_getters.get_title(h5,songidx=row)
         artist = "".join(c for c in unicodedata.normalize('NFD', str(artist.decode("utf8"))) if unicodedata.category(c) != "Mn")
         title = "".join(c for c in unicodedata.normalize('NFD', str(title.decode("utf8"))) if unicodedata.category(c) != "Mn")
-        
+
         query = "INSERT INTO songs (songID, artist, title) VALUES ('%s', '%s', '%s')" % (song_id, artist.replace("'", ""), title.replace("'", ""))
-		cursor.execute(query)
+        cursor.execute(query)
 
 """
 # populate sql table with data, csv version
 for index, row in data.iterrows():
 
-	artist_name = "".join(c for c in unicodedata.normalize('NFD', unicode(row['Artist'].decode("utf8"))) if unicodedata.category(c) != "Mn")
-	song_name = "".join(c for c in unicodedata.normalize('NFD', unicode(row['Song'].decode("utf8"))) if unicodedata.category(c) != "Mn")
+    artist_name = "".join(c for c in unicodedata.normalize('NFD', unicode(row['Artist'].decode("utf8"))) if unicodedata.category(c) != "Mn")
+    song_name = "".join(c for c in unicodedata.normalize('NFD', unicode(row['Song'].decode("utf8"))) if unicodedata.category(c) != "Mn")
 
-	query = "INSERT INTO songs (songID, artist, title) VALUES ('%s', '%s', '%s')" % (row['ID'], artist_name.replace("'", ""), song_name.replace("'", ""))
-	cursor.execute(query)
+    query = "INSERT INTO songs (songID, artist, title) VALUES ('%s', '%s', '%s')" % (row['ID'], artist_name.replace("'", ""), song_name.replace("'", ""))
+    cursor.execute(query)
 """
 
 connection.commit()
