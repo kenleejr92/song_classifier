@@ -28,6 +28,12 @@ azheaders = { 'User-Agent': 'Mozilla/5.0 (Windows NT 6.0; WOW64; rv:24.0) Gecko/
 # Functions
 #-------------------------
 
+# Parse the lyrcis to remove [] phrases and crap
+def parse_lyrics(lyrics):
+	lyrics = re.sub(r"\[.*\]", "", lyrics).lstrip()	# Remove the brackets from the lyrics and preliminary spaces
+	#print lyrics
+	return lyrics
+
 # Build genius url
 def build_genius_url(artist_name, song_name):
 	artist_name = re.sub('[^0-9a-zA-Z\w\s]+', '', artist_name)
@@ -37,7 +43,7 @@ def build_genius_url(artist_name, song_name):
 # Scrape genius for lyrics
 def scrape_genius_lyrics(artist_name, song_name):
 	song_url = build_genius_url(artist_name, song_name)
-	print "Song URL = %s\n"%(song_url)
+	#print "Song URL = %s\n"%(song_url)
 	html = requests.get(song_url, headers=headers)
 
 	# most_recent_list
@@ -62,7 +68,7 @@ def build_az_lryics(artist_name, song_name):
 # Scrape genius for lyrics
 def scrape_az_lyrics(artist_name, song_name):
 	song_url = build_az_lryics(artist_name, song_name)
-	print "Song URL = %s\n"%(song_url)
+	#print "Song URL = %s\n"%(song_url)
 
 	html = requests.get(song_url, headers=azheaders)
 
@@ -82,6 +88,26 @@ def scrape_az_lyrics(artist_name, song_name):
 	else:
 		return None
 
+# Build metro url
+def build_metro_url(artist_name, song_name):
+	return "http://www.metrolyrics.com/"+song_name.replace(" ", "-")+"-lyrics-"+artist_name.replace(" ", "-")+".html"
+
+
+# Scrape metro lyrics
+def scrape_metro_lyrics(artist_name, song_name):
+	song_url = build_metro_url(artist_name, song_name)
+	#print "Song URL = %s\n"%(song_url)
+
+	html = requests.get(song_url, headers=azheaders)
+	doc = BeautifulSoup(html.text, 'html.parser')
+
+	lyrics_div = doc.find("div", {"id" : "lyrics-body-text"})
+
+	if lyrics_div:
+		return parse_lyrics(lyrics_div.text)
+	else:
+		#print "LYRICS NOT FOUND"
+		return None
 
 
 # Main function
@@ -97,9 +123,10 @@ def main():
 	cursor.execute(query)
 	songlist = cursor.fetchall()
 
-	#songlist = mysql_util.execute_query(query)
-
 	successes = 0
+
+	missing = open('./missing_lyrics.txt', 'w')
+
 
 	for myRow in songlist:
 		#print myRow
@@ -112,31 +139,28 @@ def main():
 
 		for row in result_set:
 			# print row[0], row[1]
-			#genius_song_lyrics = scrape_genius_lyrics(row[0], row[1])
-			genius_song_lyrics = None
+			song_lyrics = scrape_genius_lyrics(row[0].lower(), row[1].lower())
 
-			if genius_song_lyrics != None:
+			if song_lyrics == None:
+				song_lyrics = scrape_az_lyrics(row[0].lower(), row[1].lower())
+
+			if song_lyrics == None:
+				try:
+					song_lyrics = scrape_metro_lyrics(row[0].lower(), row[1].lower())
+				except:
+					continue
+
+			if song_lyrics != None:
 				successes += 1
 				#print genius_song_lyrics.encode('utf-8')
 
 				target = open('./lyrics/'+myRow[0]+'.lyrics', 'w')
-				target.write(genius_song_lyrics.encode('utf-8'))
+				target.write(song_lyrics.encode('utf-8'))
 				target.close()
 
-				cursor.close()
-				sys.exit()
 			else:
-				az_song_lyrics = scrape_az_lyrics(row[0], row[1])
- 				if az_song_lyrics != None:
-					successes += 1
-				#	print az_song_lyrics.encode('utf-8')
+				missing.write(myRow[0].encode('utf-8')+", "+row[0]+', '+row[1]+"\n")
 
-					target = open('./lyrics/'+myRow[0]+'.lyrics', 'w')
-					target.write(az_song_lyrics.encode('utf-8'))
-					target.close()
-
-					cursor.close()
-					sys.exit()
 
 	#cursor.close()
 #	sys.exit()
@@ -144,6 +168,7 @@ def main():
 	print "Finished sraping lyrics. Lyrics found for " + str(float(successes)/float(10000))*100 + " percent of songs."
 
 	cursor.close()
+	missing.close()
 
 
 
