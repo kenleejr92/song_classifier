@@ -46,13 +46,16 @@ for filepath in tqdm(filepaths):
 
         if type(artist) is unicode:
             artist = artist.decode("utf8")
-        
+
 
         artist = "".join(c for c in unicodedata.normalize('NFD', unicode(artist.decode("utf8"))) if unicodedata.category(c) != "Mn")
         title = "".join(c for c in unicodedata.normalize('NFD', unicode(title.decode("utf8"))) if unicodedata.category(c) != "Mn")
 
         query = "INSERT INTO song_titles (songID, artist, title) VALUES ('%s', '%s', '%s')" % (song_id, artist.replace("'", ""), title.replace("'", ""))
         cursor.execute(query)
+
+    h5.close()
+
 
 """
 # populate sql table with data, csv version
@@ -66,7 +69,6 @@ for index, row in data.iterrows():
 """
 
 connection.commit()
-h5.close()
 # close sql connection
 cursor.close()
 connection.close()
