@@ -141,8 +141,8 @@ def main():
 			# print row[0], row[1]
 			song_lyrics = scrape_genius_lyrics(row[0].lower(), row[1].lower())
 
-			if song_lyrics == None:
-				song_lyrics = scrape_az_lyrics(row[0].lower(), row[1].lower())
+			#if song_lyrics == None:
+			#	song_lyrics = scrape_az_lyrics(row[0].lower(), row[1].lower())
 
 			if song_lyrics == None:
 				try:
