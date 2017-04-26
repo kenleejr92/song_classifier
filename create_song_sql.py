@@ -35,7 +35,7 @@ INDEX artist (artist)
 cursor.execute(sql)
 connection.commit()
 
-for filepath in tqdm(filepaths):
+for filepath in filepaths:
     h5 = hdf5_getters.open_h5_file_read(filepath)
     n = hdf5_getters.get_num_songs(h5)
 
