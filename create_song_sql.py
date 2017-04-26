@@ -51,7 +51,7 @@ for filepath in tqdm(filepaths):
         artist = "".join(c for c in unicodedata.normalize('NFD', unicode(artist.decode("utf8"))) if unicodedata.category(c) != "Mn")
         title = "".join(c for c in unicodedata.normalize('NFD', unicode(title.decode("utf8"))) if unicodedata.category(c) != "Mn")
 
-        query = "INSERT INTO songs (songID, artist, title) VALUES ('%s', '%s', '%s')" % (song_id, artist.replace("'", ""), title.replace("'", ""))
+        query = "INSERT INTO song_titles (songID, artist, title) VALUES ('%s', '%s', '%s')" % (song_id, artist.replace("'", ""), title.replace("'", ""))
         cursor.execute(query)
 
 """
