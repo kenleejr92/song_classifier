@@ -16,7 +16,7 @@ from tqdm import tqdm
 # data = data.replace(np.nan, '', regex=True)
 
 # read from hdf5 files
-glob_path = '~/dataset/MillionSongSubset/data/*/*/*/*'
+glob_path = '~/song_data/data/*/*/*/*s'
 filepaths = glob.glob(glob_path)
 
 # establish connection to sql server
