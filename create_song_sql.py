@@ -25,12 +25,15 @@ connection = pymysql.connect(host='localhost',\
 
 cursor = connection.cursor()
 
+cursor.execute('SET NAMES utf8;')
+connection.commit()
+
 # create sql table (only need to do this once)
 sql = '''CREATE TABLE song_titles (
 pkID INT PRIMARY KEY AUTO_INCREMENT,
 songID VARCHAR(50) DEFAULT NULL, 
-artist VARCHAR(200) DEFAULT NULL CHARACTER SET utf8,
-title VARCHAR(200) DEFAULT NULL CHARACTER SET utf8,
+artist VARCHAR(200) DEFAULT NULL,
+title VARCHAR(200) DEFAULT NULL,
 INDEX songID (songID)
 );'''
 cursor.execute(sql)
