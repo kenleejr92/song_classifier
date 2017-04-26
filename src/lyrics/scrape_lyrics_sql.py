@@ -112,14 +112,14 @@ def scrape_metro_lyrics(artist_name, song_name):
 
 # Main function
 def main():
-	print "Scraping lyrics"
+	#print "Scraping lyrics"
 
 	# establish connection to sql server
-	connection = pymysql.connect(host='127.0.0.1',user='root',password='root',db='songs')
+	connection = pymysql.connect(host='localhost',user='root',password='root',db='songs')
 	cursor = connection.cursor()
 
 	# select all song IDS
-	query = "SELECT songID FROM songs" 
+	query = "SELECT songID FROM song_titles" 
 	cursor.execute(query)
 	songlist = cursor.fetchall()
 
@@ -131,7 +131,7 @@ def main():
 	for myRow in songlist:
 		#print myRow
 		# 1.) Get song lyrics
-		query = "SELECT artist, title FROM songs WHERE songID = \'%s\' ;" % myRow[0]
+		query = "SELECT artist, title FROM song_titles WHERE songID = \'%s\' ;" % myRow[0]
 		cursor.execute(query)
 		result_set = cursor.fetchall()
 
@@ -165,7 +165,7 @@ def main():
 	#cursor.close()
 #	sys.exit()
 
-	print "Finished sraping lyrics. Lyrics found for " + str(float(successes)/float(10000))*100 + " percent of songs."
+	#print "Finished sraping lyrics. Lyrics found for " + str(float(successes)/float(10000))*100 + " percent of songs."
 
 	cursor.close()
 	missing.close()
