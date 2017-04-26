@@ -25,7 +25,6 @@ connection = pymysql.connect(host='localhost',\
 
 cursor = connection.cursor()
 
-connection.set_character_set('utf8')
 cursor.execute('SET NAMES utf8;')
 cursor.execute('SET CHARACTER SET utf8;')
 cursor.execute('SET character_set_connection=utf8;')
