@@ -25,10 +25,10 @@ connection = pymysql.connect(host='localhost',\
 
 cursor = connection.cursor()
 
-#connection.set_character_set('utf8')
-#cursor.execute('SET NAMES utf8;')
-#cursor.execute('SET CHARACTER SET utf8;')
-#cursor.execute('SET character_set_connection=utf8;')
+connection.set_character_set('utf8')
+cursor.execute('SET NAMES utf8;')
+cursor.execute('SET CHARACTER SET utf8;')
+cursor.execute('SET character_set_connection=utf8;')
 
 # create sql table (only need to do this once)
 sql = '''CREATE TABLE song_titles (
@@ -61,7 +61,9 @@ for filepath in filepaths:
         except:
             continue
 
-        query = "INSERT INTO song_titles (songID, artist, title) VALUES ('%s', '%s', '%s')" % (song_id, artist.encode('utf8', 'ignore'), title.encode('utf8', 'ignore'))
+
+
+        query = "INSERT INTO song_titles (songID, artist, title) VALUES ('%s', '%s', '%s')" % (song_id, artist, title)
         cursor.execute(query)
 
     h5.close()
