@@ -25,8 +25,6 @@ connection = pymysql.connect(host='localhost',\
 
 cursor = connection.cursor()
 
-cursor.execute('SET NAMES utf8;')
-connection.commit()
 
 # create sql table (only need to do this once)
 sql = '''CREATE TABLE song_titles (
@@ -55,14 +53,16 @@ for filepath in filepaths:
             title = "".join(c for c in unicodedata.normalize('NFD', unicode(title.decode("utf8"))) if unicodedata.category(c) != "Mn")
             artist = artist.replace("'", "")
             title = title.replace("'", "")
-
         except:
             continue
 
+        try:
+            query = "INSERT INTO song_titles (songID, artist, title) VALUES ('%s', '%s', '%s')" % (song_id, artist, title)
+            cursor.execute(query)
+        except mysql.connector.Error:
+            print "skipped song_id, artist, title"
+            continue
 
-
-        query = "INSERT INTO song_titles (songID, artist, title) VALUES ('%s', '%s', '%s')" % (song_id, artist, title)
-        cursor.execute(query)
 
     h5.close()
 
