@@ -177,5 +177,6 @@ if __name__=="__main__":
 	if isinstance( sys.argv[1], ( int, long ) ) and isinstance( sys.argv[2], ( int, long ) ) and sys.argv[1] < sys.argv[2]:
 	    main(sys.argv[1:])
 	else:
-		print "Invalid input " + sys.argv[1] + "of type " + type(sys.argv[1])
+		print "Invalid input " + str(sys.argv[1]) + ' and ' + str(sys.argv[2]) + "of type "
+		print type(sys.argv[1]), type(sys.argv[2])
 		raise
