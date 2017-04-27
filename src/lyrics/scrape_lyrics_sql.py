@@ -158,11 +158,7 @@ def main(argv):
 				query = "UPDATE song_titles SET hasLyrics = TRUE WHERE pkID = \'%s\' ;" % myRow
 				cursor.execute(query)
 				connection.commit()
-
-				cursor.close()
-				connection.close()
-				sys.exit()
-
+				
 			# else:
 				# missing.write(myRow[0].encode('utf-8')+", "+row[0]+', '+row[1]+"\n")
 
