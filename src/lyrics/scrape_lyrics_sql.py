@@ -177,4 +177,6 @@ if __name__=="__main__":
 	if isinstance( sys.argv[0], ( int, long ) ) and isinstance( sys.argv[0], ( int, long ) ) and sys.argv[0] < sys.argv[1]:
 	    main(sys.argv)
 	else:
+		print sys.argv[0]
+		print type sys.argv[0]
 		raise
