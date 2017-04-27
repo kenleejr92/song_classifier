@@ -111,7 +111,7 @@ def scrape_metro_lyrics(artist_name, song_name):
 
 
 # Main function
-def main():
+def main(argv):
 	#print "Scraping lyrics"
 
 	# establish connection to sql server
@@ -119,58 +119,57 @@ def main():
 	cursor = connection.cursor()
 
 	# select all song IDS
-	query = "SELECT songID FROM song_titles" 
-	cursor.execute(query)
-	songlist = cursor.fetchall()
+	#query = "SELECT songID FROM song_titles" 
+	#cursor.execute(query)
+	#songlist = cursor.fetchall()
 
-	successes = 0
+	# print out missing songs
+	#missing = open('./missing_lyrics.txt', 'w')
 
-	missing = open('./missing_lyrics.txt', 'w')
-
-
-	for myRow in songlist:
+	for myRow in range(argv[0], argv[1]+1):
 		#print myRow
 		# 1.) Get song lyrics
-		query = "SELECT artist, title FROM song_titles WHERE songID = \'%s\' ;" % myRow[0]
+		query = "SELECT songID, artist, title FROM song_titles WHERE pkID = \'%s\' ;" % myRow
 		cursor.execute(query)
 		result_set = cursor.fetchall()
 
 		# result_set = mysql_util.execute_query(query)
 
 		for row in result_set:
-			# print row[0], row[1]
-			song_lyrics = scrape_genius_lyrics(row[0].lower(), row[1].lower())
+			song_lyrics = scrape_genius_lyrics(row[1].lower(), row[2].lower())
 
-			if song_lyrics == None:
-				song_lyrics = scrape_az_lyrics(row[0].lower(), row[1].lower())
+			#if song_lyrics == None:
+			#	song_lyrics = scrape_az_lyrics(row[0].lower(), row[1].lower())
 
 			if song_lyrics == None:
 				try:
-					song_lyrics = scrape_metro_lyrics(row[0].lower(), row[1].lower())
+					song_lyrics = scrape_metro_lyrics(row[1].lower(), row[2].lower())
 				except:
 					continue
 
 			if song_lyrics != None:
-				successes += 1
 				#print genius_song_lyrics.encode('utf-8')
 
-				target = open('./lyrics/'+myRow[0]+'.lyrics', 'w')
+				target = open('./lyrics/'+row[0]+'.lyrics', 'w')
 				target.write(song_lyrics.encode('utf-8'))
 				target.close()
 
-			else:
-				missing.write(myRow[0].encode('utf-8')+", "+row[0]+', '+row[1]+"\n")
+				# store songs that have lyrics as TRUE 
+				query = "UPDATE song_titles SET hasLyrics = TRUE WHERE pkID = \'%s\' ;" % myRow
+				cursor.execute(query)
+				connection.commit()
+				
+			# else:
+				# missing.write(myRow[0].encode('utf-8')+", "+row[0]+', '+row[1]+"\n")
 
-
-	#cursor.close()
-#	sys.exit()
-
-	#print "Finished sraping lyrics. Lyrics found for " + str(float(successes)/float(10000))*100 + " percent of songs."
 
 	cursor.close()
-	missing.close()
+	connection.close()
+	#missing.close()
 
 
 
 if __name__=="__main__":
-    main()
+	num1, num2 = int(sys.argv[1]), int(sys.argv[2])
+	main((num1, num2))
+
