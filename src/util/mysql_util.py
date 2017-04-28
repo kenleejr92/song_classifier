@@ -23,12 +23,12 @@ import os, sys
 #	SQL environments
 #-------------------------
 
-REMOTE = True	### CHANGE TO SWITCH BETWEEN LOCAL AND REMOTE
+REMOTE = False	### CHANGE TO SWITCH BETWEEN LOCAL AND REMOTE
 
 
-HOST_LOCAL = "localhost:"
+HOST_LOCAL = "localhost"
 HOST_REMOTE = "54.209.131.130"
-HOST = HOST_REMOTE if REMOTE else LOCAL
+HOST = HOST_REMOTE if REMOTE else HOST_LOCAL
 
 
 DB = "songs"

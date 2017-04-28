@@ -11,6 +11,7 @@ create sql dataset from hdf5 files directly
 # Libs
 #-------------------------
 
+import os, sys
 from tqdm import tqdm
 import pymysql.cursors
 import pandas as pd
@@ -20,7 +21,6 @@ import csv
 import json
 from pprint import pprint
 import unicodedata
-import settings
 
 sys.path.append( os.path.realpath("%s/.."%os.path.dirname(__file__)) )
 from util import mysql_util, hdf5_getters, settings
@@ -37,16 +37,17 @@ filepaths = glob.glob(glob_path)
 
 # Init tables
 def init_tables():
+    print "Initializing tables"
 
     # Drop database
     q = """DROP TABLE IF EXISTS songs;"""
-    mysql_util.execute.query(q)
+    mysql_util.execute_query(q)
 
     # Create table schema
     sql = """CREATE TABLE IF NOT EXISTS songs (
 
         id INT unsigned NOT NULL AUTO_INCREMENT,
-        songID VARCHAR(50) PRIMARY KEY, 
+        songID VARCHAR(64), 
         danceability REAL DEFAULT NULL,
         duration REAL DEFAULT NULL,
         energy REAL DEFAULT NULL,
@@ -70,21 +71,24 @@ def init_tables():
         segments_pitches REAL DEFAULT NULL,
         segments_timbre REAL DEFAULT NULL,
 
-        PRIMARY KEY (id),
-        INDEX songID (songID)
+        PRIMARY KEY (id)
     );"""
-    mysql_util.execute.query(sql)
+    print sql
+    mysql_util.execute_query(sql)
     
 # Importing the data to sql
 def import_data_to_sql():
+    # Read files, convert to sql
     glob_path = settings.msds_path
     filepaths = glob.glob(glob_path)
 
+    count = 0
     for filepath in tqdm(filepaths):
         h5 = hdf5_getters.open_h5_file_read(filepath)
         n = hdf5_getters.get_num_songs(h5)
         for row in range(n):
             song_id = hdf5_getters.get_song_id(h5,songidx=row).decode('UTF-8')
+            print "Converting song %s"%(song_id)
     #         artist = hdf5_getters.get_artist_name(h5,songidx=row).decode('UTF-8')
     #         title= hdf5_getters.get_title(h5,songidx=row)#.decode('UTF-8')
     #         artist = "".join(c for c in unicodedata.normalize('NFD', str(artist.decode("utf8"))) if unicodedata.category(c) != "Mn")
@@ -149,9 +153,13 @@ def import_data_to_sql():
                 bars_start, beats_start, sections_start, tatums_start, segments_start, max_loudness_time,
                 segments_loudness_start, segments_pitches, segments_timbre) 
                 VALUES ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s',
-                '%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')"""
-                % tuple(l)
+                '%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')"""% tuple(l)
             mysql_util.execute_query(insert_query)
+
+            count = count + 1
+
+            if count % 5000 == 0:
+                print "----------------------------\nConverted %d songs\n----------------------------"%(count)
 
         h5.close()
 
