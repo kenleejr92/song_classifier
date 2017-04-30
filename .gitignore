@@ -5,6 +5,8 @@
 *.DS_Store
 *.zip
 *.json
+settings.py
+sandbox.py
 
 # nodejs gitignore
 *.seed
