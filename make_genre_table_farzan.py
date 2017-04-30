@@ -1,8 +1,9 @@
 '''
 import tags from lastfm dataset
    
-@author - Ken Lee
- Change lastfm location and mysql password
+@author - Farzan Memarian 
+ Read data from lastfm dataset, they come in train and test sets.
+ we will read the paths separately and merge the paths. 
 '''
 
 import hdf5_getters
@@ -44,19 +45,18 @@ def pick_top_tags(track_tags, top_tags, tags_count):
     return match[0][0]
            
 
-# for now we are just using the smaller version of the dataset corresponding to 10000 tracks
-# for development purposes. And the tags are stored at a pd.DataFrame
-glob_path = '~/lastfm_dataset/lastfm_train/*/*/*/*'
+glob_path = '/home/ubuntu/lastfm_dataset/lastfm_train/*/*/*/*'
 filepaths_train = glob.glob(glob_path)
-import pdb; pdb.set_trace()
-glob_path = '~/lastfm_dataset/lastfm_train/*/*/*/*'
+glob_path = '/home/ubuntu/lastfm_dataset/lastfm_test/*/*/*/*'
 filepaths_test = glob.glob(glob_path)
+filepaths = filepaths_train
+filepaths.extend(filepaths_test)
 # establish connection to sql server
 connection = pymysql.connect(host='localhost',\
-   user='root',password='password',db='songs')
+   user='root',password='root',db='songs')
 cursor = connection.cursor()
 
-# create sql table (only need to do this once)
+# create the sql table if it didn't exits
 sql = '''DROP TABLE IF EXISTS genres;'''
 cursor.execute(sql)
 connection.commit()
@@ -81,3 +81,5 @@ for filepath in tqdm(filepaths):
             query = "INSERT INTO genres (songID, genre) VALUES ('%s','%s')" % (song_id, match)
             cursor.execute(query)
             connection.commit()
+cursor.close()
+connection.close()

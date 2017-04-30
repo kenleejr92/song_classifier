@@ -129,11 +129,14 @@ def main(argv):
 	for myRow in range(argv[0], argv[1]+1):
 		#print myRow
 		# 1.) Get song lyrics
-		query = "SELECT songID, artist, title FROM song_titles WHERE pkID = \'%s\' ;" % myRow
+		query = "SELECT songID, artist, title FROM song_titles WHERE pkID = \'%s\' AND hasLyrics = FALSE;" % myRow
 		cursor.execute(query)
-		result_set = cursor.fetchall()
 
-		# result_set = mysql_util.execute_query(query)
+		if cursor.fetchall() > 0:
+			result_set = cursor.fetchall()
+		else:
+			# skip entry since lyrics already exist
+			continue
 
 		for row in result_set:
 			song_lyrics = scrape_genius_lyrics(row[1].lower(), row[2].lower())
@@ -166,7 +169,6 @@ def main(argv):
 	cursor.close()
 	connection.close()
 	#missing.close()
-
 
 
 if __name__=="__main__":

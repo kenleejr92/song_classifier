@@ -2,13 +2,16 @@ import glob
 import hdf5_getters
 import csv
 from tqdm import tqdm
+import settings
 
 DEBUG = 1
 
 mylist = dir(hdf5_getters)
 
+print settings.msds_path
+
 #Change this path to wherever you have saved the subset
-path_to_data_folder = '/Users/andrew/Documents/datamining/Project/MillionSongSubset'
+path_to_data_folder = settings.msds_path
 
 def add_sample_to_table(sample):
 	#sample is a list of all the features of a song
