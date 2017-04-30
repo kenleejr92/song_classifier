@@ -20,4 +20,4 @@ target
 .classpath
 .project
 .settings/
-
+.ipynb_checkpoints/
