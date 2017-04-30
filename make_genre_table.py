@@ -46,8 +46,11 @@ def pick_top_tags(track_tags, top_tags, tags_count):
 
 # for now we are just using the smaller version of the dataset corresponding to 10000 tracks
 # for development purposes. And the tags are stored at a pd.DataFrame
-glob_path = '/Users/kenleejr92/lastfm_subset/*/*/*/*'
-filepaths = glob.glob(glob_path)
+glob_path = '~/lastfm_dataset/lastfm_train/*/*/*/*'
+filepaths_train = glob.glob(glob_path)
+import pdb; pdb.set_trace()
+glob_path = '~/lastfm_dataset/lastfm_train/*/*/*/*'
+filepaths_test = glob.glob(glob_path)
 # establish connection to sql server
 connection = pymysql.connect(host='localhost',\
    user='root',password='password',db='songs')
