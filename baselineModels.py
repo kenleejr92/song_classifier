@@ -1,7 +1,7 @@
 
 # coding: utf-8
 
-# In[ ]:
+# In[62]:
 
 '''
 performs simple classification models on the dataset as baseline
@@ -11,6 +11,7 @@ does not use lyrics
 '''
 
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
@@ -21,11 +22,43 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
 from sklearn.naive_bayes import GaussianNB
 from sklearn.linear_model import logistic_regression_path
+from sklearn.gaussian_process import GaussianProcessClassifier
+from matplotlib.colors import ListedColormap
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.datasets import make_moons, make_circles, make_classification
+from sklearn.neural_network import MLPClassifier
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
+from sklearn.metrics.classification import accuracy_score, log_loss
+from sklearn.gaussian_process.kernels import RBF
+import pymysql.cursors
+from sklearn.preprocessing import 
 
 
+# establish connection to sql server
+connection = pymysql.connect(host='localhost',   user='root',db='songs')
+cursor = connection.cursor()
+
+sql = ''' SELECT * FROM `songs` '''
+cursor.execute(sql)
+
+# read the data from the sql table
+the_data = cursor.fetchall()
+# put the data in a panda DataFrame
+msd_df = pd.DataFrame(list(the_data))
 
 
-
+# read the column titles from the sql table
+num_fields = len(cursor.description)
+field_names = [i[0] for i in cursor.description]
+feature_fields = field_names[3:-1]  # This line might need to be modified 
+                                    # based on the columns of the sql table
+output_field = field_names[-1]
+msd_df.columns = field_names
+X = msd_df[feature_fields]    # DataFrame storing the features
+y = msd_df[output_field]      # DataFrame storing the outputs
+cursor.close()
+connection.close()
 
 h = .02  # step size in the mesh
 
@@ -33,9 +66,9 @@ methods = ["Linear SVM", "RBF SVM", "Gaussian Process",
          "Decision Tree", "Random Forest", "Neural Net", "AdaBoost",
          "Naive Bayes", "QDA"]
 
-
-Xgboost
-Gradient boosting
+# add these two methods as well
+# Xgboost
+# Gradient boosting
 
 
 classifiers = [
@@ -50,16 +83,9 @@ classifiers = [
     GaussianNB(),
     QuadraticDiscriminantAnalysis()]
 
-X, y = make_classification(n_features=2, n_redundant=0, n_informative=2,
-                           random_state=1, n_clusters_per_class=1)
-rng = np.random.RandomState(2)
-X += 2 * rng.uniform(size=X.shape)
 linearly_separable = (X, y)
 
-datasets = [make_moons(noise=0.3, random_state=0),
-            make_circles(noise=0.2, factor=0.5, random_state=1),
-            linearly_separable
-            ]
+datasets = [linearly_separable]            
 
 figure = plt.figure(figsize=(27, 9))
 i = 1
