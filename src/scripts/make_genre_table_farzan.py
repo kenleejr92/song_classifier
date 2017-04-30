@@ -86,10 +86,12 @@ for filepath in tqdm(filepaths):
         if len(data.get('tags')) != 0:
             tags = data.get('tags')
             song_id = data.get('track_id')
+            artist = data.get('artist')
+            title= data.get('title')
             tags_pure = [i[0] for i in tags]
             tags_count = [i[1] for i in tags]
             match = pick_top_tags(tags_pure,top_tags, tags_count)
-            query = "INSERT INTO genres (songID, genre) VALUES ('%s','%s')" % (song_id, match)
+            query = "INSERT INTO genres (songID, genre, artist, title) VALUES ('%s','%s','%s','%s')" % (song_id, match, artist, title)
             cursor.execute(query)
             connection.commit()
 cursor.close()
