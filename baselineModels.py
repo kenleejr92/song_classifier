@@ -1,8 +1,3 @@
-
-# coding: utf-8
-
-# In[62]:
-
 '''
 performs simple classification models on the dataset as baseline
 does not use lyrics
@@ -32,33 +27,59 @@ from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 from sklearn.metrics.classification import accuracy_score, log_loss
 from sklearn.gaussian_process.kernels import RBF
 import pymysql.cursors
-from sklearn.preprocessing import 
+# from sklearn.preprocessing import 
 
 
 # establish connection to sql server
-connection = pymysql.connect(host='localhost',   user='root',db='songs')
+connection = pymysql.connect(host='localhost', user='root', password='root' ,db='songs')
 cursor = connection.cursor()
 
-sql = ''' SELECT * FROM `songs` '''
+
+
+
+
+
+# **************************
+# here features are imported from features table, genre not included 
+# **************************
+sql = ''' SELECT * FROM `features_subset` '''
 cursor.execute(sql)
-
-# read the data from the sql table
+# read the features from the sql table
 the_data = cursor.fetchall()
-# put the data in a panda DataFrame
+# put the features in a panda DataFrame
 msd_df = pd.DataFrame(list(the_data))
-
-
 # read the column titles from the sql table
 num_fields = len(cursor.description)
-field_names = [i[0] for i in cursor.description]
-feature_fields = field_names[3:-1]  # This line might need to be modified 
+feature_names_unencoded = [i[0] for i in cursor.description]
+feature_names = [s.encode('utf-8') for s in feature_names_unencoded ]
+feature_fields = feature_names[1:-1]  # This line might need to be modified 
                                     # based on the columns of the sql table
-output_field = field_names[-1]
-msd_df.columns = field_names
+msd_df.columns = feature_names
+
+# **************************
+# read genres from genre table 
+# **************************
+sql = ''' SELECT * FROM `genres` '''
+cursor.execute(sql)
+# read the features from the sql table
+the_data = cursor.fetchall()
+# put the features in a panda DataFrame
+genre_df = pd.DataFrame(list(the_data))
+# read the column titles from the sql table
+num_fields = len(cursor.description)
+genre_names_unencoded = [i[0] for i in cursor.description]
+genre_table_names = [s.encode('utf-8') for s in genre_names_unencoded ]
+genre_fields = genre_table_names[-1]  # This line might need to be modified 
+
+genre_df.columns = genre_table_names
 X = msd_df[feature_fields]    # DataFrame storing the features
-y = msd_df[output_field]      # DataFrame storing the outputs
+y = genre_df[genre_fields]      # DataFrame storing the outputs
+import pdb; pdb.set_trace()
 cursor.close()
 connection.close()
+# **************************
+# NOW DATA HAS BEEN IMPORTED
+# **************************
 
 h = .02  # step size in the mesh
 
