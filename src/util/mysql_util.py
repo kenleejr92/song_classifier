@@ -17,6 +17,7 @@ MySql utility file
 # External libs
 import MySQLdb
 import os, sys
+import settings
 
 
 #-------------------------
@@ -30,6 +31,8 @@ HOST_LOCAL = "localhost"
 HOST_REMOTE = "54.209.131.130"
 HOST = HOST_REMOTE if REMOTE else HOST_LOCAL
 
+PASSWORD_LOCAL = settings.sql_password
+PASSWORD = PASSWORD_REMOTE if REMOTE else PASSWORD_LOCAL
 
 DB = "songs"
 

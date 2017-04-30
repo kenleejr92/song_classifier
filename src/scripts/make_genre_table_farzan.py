@@ -6,7 +6,7 @@ import tags from lastfm dataset
  we will read the paths separately and merge the paths. 
 '''
 
-from util import mysql_util, hdf5_getters, settings
+
 from tqdm import tqdm
 import pymysql.cursors
 import pandas as pd
@@ -19,6 +19,13 @@ from pprint import pprint
 import pdb
 import re
 import unicodedata
+import sys, os
+
+#sys.path.append( '/Users/andrew/Documents/datamining/Project/song_classifier/src/util')
+sys.path.append( os.path.realpath("%s/.."%os.path.dirname(__file__)) )
+import hdf5_getters, settings
+
+LOCAL = True
 
 
 top_tags = { 
@@ -45,16 +52,19 @@ def pick_top_tags(track_tags, top_tags, tags_count):
     if len(match) == 0: return 'NULL'
     return match[0][0]
            
-
-glob_path = '/home/ubuntu/lastfm_dataset/lastfm_train/*/*/*/*'
-filepaths_train = glob.glob(glob_path)
-glob_path = '/home/ubuntu/lastfm_dataset/lastfm_test/*/*/*/*'
-filepaths_test = glob.glob(glob_path)
-filepaths = filepaths_train
-filepaths.extend(filepaths_test)
+if LOCAL:
+    glob_path = settings.lastfm_path
+    filepaths = glob.glob(glob_path)
+else:    
+    glob_path = '/home/ubuntu/lastfm_dataset/lastfm_train/*/*/*/*'
+    filepaths_train = glob.glob(glob_path)
+    glob_path = '/home/ubuntu/lastfm_dataset/lastfm_test/*/*/*/*'
+    filepaths_test = glob.glob(glob_path)
+    filepaths = filepaths_train
+    filepaths.extend(filepaths_test)
 # establish connection to sql server
 connection = pymysql.connect(host='localhost',\
-   user='root',password='root',db='songs')
+   user='root',password=settings.sql_password,db='songs')
 cursor = connection.cursor()
 
 # create the sql table if it didn't exits
