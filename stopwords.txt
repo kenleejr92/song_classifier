@@ -1,3 +1,5 @@
+(chorus)
+(x2)
 a
 able
 about
@@ -83,7 +85,6 @@ besides
 between
 beyond
 biol
-bold
 both
 brief
 briefly
@@ -103,9 +104,6 @@ co
 com
 come
 comes
-conclusion
-conclusions
-consequently
 contain
 containing
 contains
@@ -242,8 +240,6 @@ inward
 is
 isn't
 it
-italics
-italic
 itd
 it'll
 its
@@ -252,8 +248,7 @@ i've
 j
 just
 k
-keep
-keeps
+keep	keeps
 kept
 kg
 km
@@ -296,8 +291,6 @@ means
 meantime
 meanwhile
 merely
-method
-methods
 mg
 might
 million
