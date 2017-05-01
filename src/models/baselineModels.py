@@ -10,7 +10,11 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import pymysql.cursors
 import sys, os
+# print "__file__:   ", __file__
+# print "os.path.dirname(__file__):   ", os.path.dirname(__file__)
+# print "os.path.dirpath of the parrent of above:   ", os.path.realpath("%s/.."%os.path.dirname(__file__)) 
 sys.path.append( os.path.realpath("%s/.."%os.path.dirname(__file__)) )
+
 from util import data_accessor_util
 from sklearn.model_selection import train_test_split
 from sklearn import preprocessing
@@ -33,12 +37,14 @@ from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 from sklearn.metrics.classification import accuracy_score, log_loss
 from sklearn.gaussian_process.kernels import RBF
 
+DEBUG = 1
 
 # reading the data from sql table using the get_all_data method
 df = data_accessor_util.get_all_data()
 X = df.drop(['genre','year'], axis=1)
 y = df['genre']
-y = pd.DataFrame(preprocessing.LabelEncoder().fit_transform(y))
+le = preprocessing.LabelEncoder()
+y = le.fit_transform(y)
 
 
 h = .02  # step size in the mesh
@@ -70,14 +76,14 @@ classifiers = [
 
 # preprocess dataset, split into training and test part
 X = preprocessing.StandardScaler().fit_transform(X)
-X = pd.DataFrame(X)
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=.4, random_state=42)
-import pdb; pdb.set_trace()
+# import pdb; pdb.set_trace()
 
 accuracy_resuts = []
 # iterate over classifiers
 
 for name, clf in zip(methods, classifiers):
+    if DEBUG == 1: print "now performing: ", name
     # ax = plt.subplot(len(datasets), len(classifiers) + 1, i)
     clf.fit(X_train, y_train)
     predict = clf.predict(X_test)
@@ -85,7 +91,7 @@ for name, clf in zip(methods, classifiers):
     accuracy_resuts.append((name, accuracy))
 
 # plt.tight_layout()
-#plt.show()
+# plt.show()
 print accuracy_resuts
 file = open("store_accuracy.txt","w")
 for method, value in accuracy_resuts:
