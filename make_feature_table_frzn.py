@@ -29,9 +29,9 @@ connection = pymysql.connect(host='localhost',\
 cursor = connection.cursor()
 
 # create sql table (only need to do this once)
-sql = '''DROP TABLE IF EXISTS features;'''
-cursor.execute(sql)
-connection.commit()
+# sql = '''DROP TABLE IF EXISTS features;'''
+# cursor.execute(sql)
+# connection.commit()
 sql = '''CREATE TABLE IF NOT EXISTS features (
 
 songID VARCHAR(50) PRIMARY KEY, 
@@ -132,7 +132,7 @@ for filepath in tqdm(filepaths):
             if type(val)==np.float64 and np.isnan(val):
                 l[idx]=0.
                 
-        query = "INSERT INTO songs (songID, danceability, duration, energy, loudness, musicalKey,\
+        query = "INSERT IGNORE INTO features (songID, danceability, duration, energy, loudness, musicalKey,\
             mode, tempo, time_signature, year, song_hottness, max_loudness, end_of_fade_in, start_of_fade_out,\
             bars_start, beats_start, sections_start, tatums_start, segments_start, max_loudness_time,\
             segments_loudness_start, segments_pitches, segments_timbre) \
