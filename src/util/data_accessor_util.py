@@ -49,6 +49,7 @@ def get_all_data():
 		d.pop('track_id', None)
 		d.pop('energy', None)
 
+
 		results.append(d)
 
 	# print "\n\n"
