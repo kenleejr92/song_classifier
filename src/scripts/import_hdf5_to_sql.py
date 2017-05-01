@@ -71,6 +71,12 @@ def init_tables():
         segments_pitches REAL DEFAULT NULL,
         segments_timbre REAL DEFAULT NULL,
 
+        artist_name VARCHAR(64),
+        song_name VARCHAR(64),
+
+        
+
+
         PRIMARY KEY (id)
     );"""
     print sql

@@ -1,14 +1,14 @@
 '''
 create sql dataset from hdf5 files directly
    
-@author - Ken Lee
+@author - FARZAN MEMARIAN
+ this is based on Ken's version and my previous version and the following:
  this is based on Andrew's id_title_artist.py and Alen's create_song_sql.py
  Does not include artist and title
- Interval of timestamp features used
- Mean of time series features used
+ Interval of timestamp features_2 used
+ Mean of time series features_2 used
+ The addresses correspond to AWS addresses now
 '''
-
-# in this cell, some of the features of MSD dataset are imported and stored in SQL table. 
 
 
 import hdf5_getters
@@ -22,20 +22,17 @@ import json
 from pprint import pprint
 import unicodedata
 
-#TODO: change glob_path and database password
-glob_path = '~/Users/kenleejr92/MillionSongSubset/data/*/*/*/*'
-filepaths = glob.glob(glob_path)
 
 # establish connection to sql server
 connection = pymysql.connect(host='localhost',\
-   user='root',password='password',db='songs')
+   user='root',password='root',db='songs')
 cursor = connection.cursor()
 
 # create sql table (only need to do this once)
-sql = '''DROP TABLE IF EXISTS songs;'''
+sql = '''DROP TABLE IF EXISTS features_2;'''
 cursor.execute(sql)
 connection.commit()
-sql = '''CREATE TABLE IF NOT EXISTS songs (
+sql = '''CREATE TABLE IF NOT EXISTS features_2 (
 
 songID VARCHAR(50) PRIMARY KEY, 
 danceability REAL DEFAULT NULL,
@@ -66,8 +63,10 @@ INDEX songID (songID)
 cursor.execute(sql)
 connection.commit()
 
-glob_path = '/Users/kenleejr92/MillionSongSubset/data/*/*/*/*'
+# read addresses from the corresponding directory
+glob_path = '/home/ubuntu/song_data/data/*/*/*/*'
 filepaths = glob.glob(glob_path)
+i= 0
 for filepath in tqdm(filepaths):
     h5 = hdf5_getters.open_h5_file_read(filepath)
     n = hdf5_getters.get_num_songs(h5)
@@ -78,7 +77,7 @@ for filepath in tqdm(filepaths):
 #         artist = "".join(c for c in unicodedata.normalize('NFD', str(artist.decode("utf8"))) if unicodedata.category(c) != "Mn")
 #         title = "".join(c for c in unicodedata.normalize('NFD', str(title.decode("utf8"))) if unicodedata.category(c) != "Mn")
         
-        #single number features
+        #single number features_2
         danceability = hdf5_getters.get_danceability(h5,songidx=row)
         duration = hdf5_getters.get_duration(h5,songidx=row)
         energy = hdf5_getters.get_energy(h5,songidx=row)
@@ -92,7 +91,7 @@ for filepath in tqdm(filepaths):
         end_of_fade_in = hdf5_getters.get_end_of_fade_in(h5,songidx=row)
         start_of_fade_out = hdf5_getters.get_start_of_fade_out(h5,songidx=row)
         
-        #timestamp features
+        #timestamp features_2
         #take last element and divide by length to get beats/unit time, segments/unit_time
         bars_start = hdf5_getters.get_bars_start(h5,songidx=row)
         beats_start = hdf5_getters.get_beats_start(h5,songidx=row)
@@ -110,12 +109,16 @@ for filepath in tqdm(filepaths):
         if len(segments_start)==0: segments_start = 0.
         else: segments_start = segments_start[-1]/len(segments_start)
         
-        #time series features
+        #time series features_2
         #take mean
         max_loudness_time = hdf5_getters.get_segments_loudness_max_time(h5,songidx=row)
         segments_loudness_start = hdf5_getters.get_segments_loudness_start(h5,songidx=row)
         segments_pitches = hdf5_getters.get_segments_pitches(h5,songidx=row)
         segments_timbre = hdf5_getters.get_segments_timbre(h5,songidx=row)
+      #  print 'segments_pitches:'		
+      #  print segments_pitches
+      #  print "segments_timbre:"
+      #  print segments_timbre
         max_loudness = hdf5_getters.get_segments_loudness_max(h5,songidx=row)
         segments_pitches = np.mean(segments_pitches)
         segments_timbre = np.mean(segments_timbre)
@@ -133,7 +136,7 @@ for filepath in tqdm(filepaths):
             if type(val)==np.float64 and np.isnan(val):
                 l[idx]=0.
                 
-        query = "INSERT INTO songs (songID, danceability, duration, energy, loudness, musicalKey,\
+        query = "INSERT IGNORE INTO features_2 (songID, danceability, duration, energy, loudness, musicalKey,\
             mode, tempo, time_signature, year, song_hottness, max_loudness, end_of_fade_in, start_of_fade_out,\
             bars_start, beats_start, sections_start, tatums_start, segments_start, max_loudness_time,\
             segments_loudness_start, segments_pitches, segments_timbre) \
@@ -143,6 +146,8 @@ for filepath in tqdm(filepaths):
         cursor.execute(query)
         connection.commit()
     h5.close()
+    i += 1
+    if i==30000: break
 
 # close sql connection
 cursor.close()

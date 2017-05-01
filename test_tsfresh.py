@@ -1,0 +1,8 @@
+import matplotlib.pylab as plt
+from tsfresh.examples.robot_execution_failures import download_robot_execution_failures, load_robot_execution_failures
+from tsfresh import extract_features, extract_relevant_features, select_features
+from tsfresh.utilities.dataframe_functions import impute
+from tsfresh.feature_extraction import FeatureExtractionSettings
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.cross_validation import train_test_split
+from sklearn.metrics import classification_report
