@@ -74,8 +74,8 @@ def init_tables():
         segments_timbre REAL DEFAULT NULL,
 
         artist_id VARCHAR(128),
-        artist_name VARCHAR(64),
-        song_title VARCHAR(64),
+        artist_name VARCHAR(256),
+        song_title VARCHAR(256),
         track_id VARCHAR(64),
 
         deleted tinyint(1) DEFAULT 0,
@@ -204,7 +204,7 @@ def import_data_to_sql():
 # Main Script
 def main():
     # 1.) Init tables
-    #init_tables()
+    init_tables()
 
     # 2.) Import data from songs hdf5 files to sql
     import_data_to_sql()

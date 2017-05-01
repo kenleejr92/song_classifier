@@ -51,9 +51,9 @@ def get_all_data():
 
 		results.append(d)
 
-	print "\n\n"
+	# print "\n\n"
 	df = pd.DataFrame(results)
-	print df
+	# print df
 
 	return df
 
