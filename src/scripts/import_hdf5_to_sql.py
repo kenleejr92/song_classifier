@@ -93,7 +93,7 @@ def import_data_to_sql():
         print "Must array of alphabaet characters"
         return
 
-    input_letters = sys.argv[1]
+    input_letters = sys.argv[1:]
 
     alphas = list(string.ascii_uppercase)
 
