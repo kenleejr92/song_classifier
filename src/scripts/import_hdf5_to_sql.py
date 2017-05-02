@@ -204,7 +204,7 @@ def import_data_to_sql():
 # Main Script
 def main():
     # 1.) Init tables
-    init_tables()
+    #init_tables()
 
     # 2.) Import data from songs hdf5 files to sql
     import_data_to_sql()
