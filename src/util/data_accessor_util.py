@@ -69,6 +69,7 @@ def prep_data_set(data):
 		d.pop('track_id', None)
 		d.pop('energy', None)
 		d.pop('is_train_test', None)
+		d.pop('danceability', None)
 
 		results.append(d)
 
@@ -79,8 +80,17 @@ def preprocess_data(train_data, test_data):
 	train_df = pd.DataFrame(train_data)
 	test_df = pd.DataFrame(test_data)
 
+	# Separate target values
 	(train_X, train_Y, train_le) = separate_target_values(train_df)
 	(test_X, test_Y, test_le) = separate_target_values(test_df)
+
+	# Standardized x values
+	column_headers = list(train_X.columns.values)
+	scaler = preprocessing.StandardScaler()
+	train_X = pd.DataFrame(scaler.fit_transform(train_X))
+	test_X = pd.DataFrame(scaler.transform(test_X))
+	train_X.columns = column_headers
+	test_X.columns = column_headers
 
 	return (train_X, train_Y, train_le, test_X, test_Y, test_le)
 
@@ -90,6 +100,7 @@ def separate_target_values(df):
 
 	Y = df['genre']
 
+	# Label encodes Y values
 	le = preprocessing.LabelEncoder()
 	Y = pd.DataFrame(le.fit_transform(Y))
 
@@ -245,6 +256,7 @@ def get_all_data():
         d.pop('track_id', None)
         d.pop('energy', None)
         d.pop('is_train_test', None)
+        d.pop('danceability', None)
 
         results.append(d)
 
