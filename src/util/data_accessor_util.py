@@ -32,7 +32,8 @@ def get_all_data():
 		FROM songs
 		LEFT JOIN genres ON genres.songID = songs.track_id
 		WHERE genres.genre IS NOT NULL
-		AND genres.genre NOT LIKE 'NULL';"""
+		AND genres.genre NOT LIKE 'NULL'
+		AND songs.has_lyrics = 1;"""
 
 	data = mysql_util.execute_dict_query(q)
 
@@ -48,6 +49,7 @@ def get_all_data():
 		d.pop('song_title', None)
 		d.pop('track_id', None)
 		d.pop('energy', None)
+		d.pop('year', None)
 
 		results.append(d)
 

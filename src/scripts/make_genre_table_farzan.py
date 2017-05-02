@@ -6,7 +6,9 @@ import tags from lastfm dataset
  we will read the paths separately and merge the paths. 
 '''
 
-
+#-------------------------
+# Libs
+#-------------------------
 from tqdm import tqdm
 import pymysql.cursors
 import pandas as pd
@@ -23,31 +25,38 @@ import sys, os
 
 #sys.path.append( '/Users/andrew/Documents/datamining/Project/song_classifier/src/util')
 sys.path.append( os.path.realpath("%s/.."%os.path.dirname(__file__)) )
-import hdf5_getters, settings
+from util import hdf5_getters, settings
 
-LOCAL = True
-
+#-------------------------
+#   Globals
+#-------------------------
+LOCAL = False
 
 top_tags = { 
-'classic rock or pop': ['classic rock','classic pop'],
-'classical': ['classical'],
-'dance and electronica': ['dance', 'electronica', 'electronic'],
-'folk': ['folk'],
-'hip-hop': ['hip-hop','hiphop','hip-Hop','hip hop'],
-'jazz': ['jazz'],
-'metal': ['metal'],
-'pop': ['pop'],
-'rock and indie': ['rock', 'indie'],
-'soul and reggae': ['soul', 'reggae'] }
+'alternative or folk' : ['alternative', 'indie', 'punk', 'Progressive', 'folk', 'blues'],
+'classic rock or pop': ['classic rock','classic pop', 'rock', 'oldies', '70s', '80s', '60s'],
+'country' : ['country', 'easy listening'],
+'dance and electronica': ['dance', 'electronica', 'electronic', 'trance', 'House', 'techno'],
+'hip-hop': ['hip-hop','hiphop','hip-Hop','hip hop', 'rap'],
+'metal': ['metal', 'hardcore', 'heavy metal', 'death metal'],
+'pop': ['pop', 'club', 'party'],
+'soul/r&b': ['soul', 'reggae', 'Disco', 'funky', 'funk', 'r&b'] }
 
+#-------------------------
+#   Functions
+#-------------------------
+
+# Pick the top tags
 def pick_top_tags(track_tags, top_tags, tags_count):
     match = []
     for key, value in top_tags.items():
         for i,t in enumerate(track_tags):
-            temp = re.findall(r"(?=("+'|'.join(value)+r"))",t,flags=re.IGNORECASE)
-            if len(temp) == 0:
-                continue              
+
+            if t not in " ".join(str(x) for x in value):
+                continue   
+
             match.append((key, tags_count[i]))
+
     sorted(match, key=lambda tup: tup[1])
     if len(match) == 0: return 'NULL'
     return match[0][0]
@@ -86,12 +95,10 @@ for filepath in tqdm(filepaths):
         if len(data.get('tags')) != 0:
             tags = data.get('tags')
             song_id = data.get('track_id')
-            artist = data.get('artist')
-            title= data.get('title')
             tags_pure = [i[0] for i in tags]
             tags_count = [i[1] for i in tags]
             match = pick_top_tags(tags_pure,top_tags, tags_count)
-            query = "INSERT INTO genres (songID, genre, artist, title) VALUES ('%s','%s','%s','%s')" % (song_id, match, artist, title)
+            query = "INSERT INTO genres (songID, genre) VALUES ('%s','%s')" % (song_id, match)
             cursor.execute(query)
             connection.commit()
 cursor.close()
