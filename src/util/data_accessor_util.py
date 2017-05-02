@@ -26,8 +26,8 @@ import itertools
 #	Functions
 #-------------------------
 
-# Get the data and return a dataframee
-def get_all_data():
+# Get the raw data w/lyrics
+def get_all_data_w_lyrics_raw():
 	q = """SELECT songs.*, genres.genre
 		FROM songs
 		LEFT JOIN genres ON genres.songID = songs.track_id
@@ -35,7 +35,22 @@ def get_all_data():
 		AND genres.genre NOT LIKE 'NULL'
 		AND songs.has_lyrics = 1;"""
 
-	data = mysql_util.execute_dict_query(q)
+	return mysql_util.execute_dict_query(q)
+
+# Get the raw data
+def get_all_data_raw():
+	q = """SELECT songs.*, genres.genre
+		FROM songs
+		LEFT JOIN genres ON genres.songID = songs.track_id
+		WHERE genres.genre IS NOT NULL
+		AND genres.genre NOT LIKE 'NULL';"""
+
+	return mysql_util.execute_dict_query(q)
+
+# Get the data and return a dataframee
+def get_all_data():
+
+	data = get_all_data_w_lyrics_raw()
 
 	# Delete fields we dont want
 	results = []
