@@ -3,6 +3,10 @@ Data accessor utility file
 
 - Gets the data from SQL and forms into a db
 
+- Call 'get_all_data_sets' to get (train_X, train_Y, train_le, test_X, test_Y, test_le) for dataset that has genre
+
+- Call 'get_data_sets_w_lyrics' to get (train_X, train_Y, train_le, test_X, test_Y, test_le) for dataset that has genre AND lyrics
+
 @author - Tim Mahler
 """
 
@@ -191,7 +195,11 @@ def split_data_sets_w_lyrics(data):
 
 	return preprocess_data(train_data, test_data)
 
+# 
 # Get all data sets
+# 
+# returns (train_X, train_Y, train_le, test_X, test_Y, test_le)
+# 
 def get_all_data_sets():
 
 	# get data
@@ -203,7 +211,11 @@ def get_all_data_sets():
 	# split into training and test
 	return split_all_data_sets(results)
 
+# 
 # Get the data w lyrics
+# 
+# returns (train_X, train_Y, train_le, test_X, test_Y, test_le)
+# 
 def get_data_sets_w_lyrics():
 
 	# get data
