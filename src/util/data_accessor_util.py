@@ -49,8 +49,6 @@ def get_all_data():
 		d.pop('song_title', None)
 		d.pop('track_id', None)
 		d.pop('energy', None)
-		d.pop('year', None)
-
 
 		results.append(d)
 
