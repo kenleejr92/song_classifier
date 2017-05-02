@@ -51,11 +51,12 @@ def get_all_data():
 		d.pop('energy', None)
 		d.pop('year', None)
 
+
 		results.append(d)
 
-	print "\n\n"
+	# print "\n\n"
 	df = pd.DataFrame(results)
-	print df
+	# print df
 
 	return df
 

@@ -25,7 +25,6 @@ import json
 from pprint import pprint
 import unicodedata
 
-
 glob_path = '/home/frank/1CSEM/1UTCoursesTaken/dataMiningEE380L/termProject/teamproject/dataset/MillionSongSubset/data/*/*/*/*'
 filepaths = glob.glob(glob_path)
 
