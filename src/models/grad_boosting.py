@@ -52,11 +52,10 @@ clf = GradientBoostingClassifier(loss='deviance', learning_rate=0.1, n_estimator
                                  warm_start=False, presort='auto')
 
 # use a full grid over all parameters
-# param_grid = {"max_depth": [3, 10, 20, None],
-#               "learning_rate": [0.01, 0.1 , 0.2],
-#               "n_estimators": [50, 200, 800]}
+param_grid = {"max_depth": [3, 10],
+              "n_estimators": [50, 200]}
 
-param_grid = {"max_depth": [3, 10]}
+
 
 # run grid search
 grid_search = GridSearchCV(clf, param_grid=param_grid)
@@ -66,6 +65,7 @@ y_test_predict = grid_search.predict(X_test)
 y_train_predict = grid_search.predict(X_train)
 test_accuracy = accuracy_score(y_test, y_test_predict)
 train_accuracy = accuracy_score(y_train, y_train_predict)
+
 end = time.time()
 elasped_time = end - start
 
@@ -75,15 +75,16 @@ print "execution time of %s was %s seconds" %(method, elasped_time)
 print "train accuracy of method %s is %s" % (method, train_accuracy)
 print "test accuracy of method %s is %s" % (method, test_accuracy)
 print classification_report(y_test, y_test_predict, target_names=classes)
-entry1 = "train accuracy of " + method + " = " + str(train_accuracy) + "\n"
-entry2 = "test accuracy of " + method + " = " + str(test_accuracy) + "\n"
+
 myFile = open("GradientBoostingClassifier.txt","a")
-myFile.write(entry1)
-myFile.write(entry2)
+print >> myFile, "execution time of %s was %s seconds\n" %(method, elasped_time)
+print >> myFile, "train accuracy of method %s is %s \n" % (method, train_accuracy)
+print >> myFile, "test accuracy of method %s is %s \n" % (method, test_accuracy)
 print >> myFile, classification_report(y_test, y_test_predict, target_names=classes)
-
+print >> myFile, "\n\n\n"
+print >> myFile, "best params: ", grid_search.best_params_
 myFile.close()
-
+myFile.close()
 
 
 

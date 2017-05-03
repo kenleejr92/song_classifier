@@ -1,7 +1,7 @@
 """
-linear SVM model
+AdaBoosClassifer model
 
-- Performs SVM to classify the data
+- Performs AdaBoost to classify the data
 
 @author - Farzan Memarian
 """
@@ -76,5 +76,7 @@ myFile = open("AdaBoostClassifier.txt","a")
 myFile.write(entry1)
 myFile.write(entry2)
 print >> myFile, classification_report(y_test, y_test_predict, target_names=classes)
+print >> myFile, "\n\n\n"
+print >> myFile, "best params: ", grid_search.best_params_
 myFile.close()
 myFile.close()
