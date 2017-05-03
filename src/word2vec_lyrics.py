@@ -44,10 +44,10 @@ for row in data:
 		wordvector = np.reshape(wordvector, (wordvector.shape[0]/300, 300))
 		
 		# save out one wordvector
-		file = open('example_wordVector.pkl', 'w')
+		file = open('~/wordVectors/'+row['songID']+'.pkl', 'w')
 		pickle.dump(wordvector, file)
 		file.close()
 
 		# quit after one iteration for testing purposes
-		sys.exit()
+		# sys.exit()
 	
