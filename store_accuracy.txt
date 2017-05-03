@@ -1,0 +1,6 @@
+Storing the accuracy of different classification methods 
+accuracy of Logistic Regression = 0.375476190476
+accuracy of Decision Tree = 0.384095238095
+accuracy of Random Forest = 0.414857142857
+accuracy of Linear SVM = 0.405619047619
+accuracy of RBF SVM = 0.368
