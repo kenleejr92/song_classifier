@@ -1,0 +1,13 @@
+python scripts/time_series_feature_extraction.py 'A' 'B' > ts_log.txt &
+python scripts/time_series_feature_extraction.py 'C' 'D' > ts_log.txt &
+python scripts/time_series_feature_extraction.py 'E' 'F' > ts_log.txt &
+python scripts/time_series_feature_extraction.py 'G' 'H' > ts_log.txt &
+python scripts/time_series_feature_extraction.py 'I' 'J' > ts_log.txt &
+python scripts/time_series_feature_extraction.py 'K' 'L' > ts_log.txt &
+python scripts/time_series_feature_extraction.py 'M' 'N' > ts_log.txt &
+python scripts/time_series_feature_extraction.py 'O' 'P' > ts_log.txt &
+python scripts/time_series_feature_extraction.py 'Q' 'R' > ts_log.txt &
+python scripts/time_series_feature_extraction.py 'S' 'T' > ts_log.txt &
+python scripts/time_series_feature_extraction.py 'U' 'V' > ts_log.txt &
+python scripts/time_series_feature_extraction.py 'W' 'X' > ts_log.txt &
+python scripts/time_series_feature_extraction.py 'Y' 'Z' > ts_log.txt &
