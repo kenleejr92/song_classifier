@@ -62,7 +62,25 @@ def prep_data_set(data):
 		d.pop('id', None)
 		d.pop('has_lyrics', None)
 		d.pop('deleted', None)
-		d.pop('songID', None)
+		d.pop('artist_id', None)
+		d.pop('artist_name', None)
+		d.pop('song_title', None)
+		d.pop('track_id', None)
+		d.pop('energy', None)
+		d.pop('is_train_test', None)
+		d.pop('danceability', None)
+
+		results.append(d)
+
+	return results
+
+# Remove fields from feature set
+def prep_lyrics_data_set(data):
+	results = []
+	for d in data:
+		d.pop('id', None)
+		d.pop('has_lyrics', None)
+		d.pop('deleted', None)
 		d.pop('artist_id', None)
 		d.pop('artist_name', None)
 		d.pop('song_title', None)
@@ -85,12 +103,23 @@ def preprocess_data(train_data, test_data):
 	(test_X, test_Y, test_le) = separate_target_values(test_df)
 
 	# Standardized x values
+	train_x_songs_ids = train_X['songID']
+	test_x_songs_ids = test_X['songID']
+
+	train_X = train_X.drop('songID', axis=1)
+	test_X = test_X.drop('songID', axis=1)
+
+
 	column_headers = list(train_X.columns.values)
 	scaler = preprocessing.StandardScaler()
 	train_X = pd.DataFrame(scaler.fit_transform(train_X))
 	test_X = pd.DataFrame(scaler.transform(test_X))
 	train_X.columns = column_headers
 	test_X.columns = column_headers
+
+
+	train_X.insert(0, "songID", train_x_songs_ids)
+	test_X.insert(0, "songID", test_x_songs_ids)
 
 	return (train_X, train_Y, train_le, test_X, test_Y, test_le)
 
@@ -233,7 +262,7 @@ def get_data_sets_w_lyrics():
 	data = get_all_data_w_lyrics_raw()
 
 	# prep data
-	results = prep_data_set(data)
+	results = prep_lyrics_data_set(data)
 
 	# split into training and test
 	return split_data_sets_w_lyrics(results)
