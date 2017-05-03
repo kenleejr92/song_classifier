@@ -2,30 +2,52 @@
 # import modules & set up logging
 import gensim, logging, os, re, glob, sys
 import numpy as np
-logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
+import pickle
 
-files = glob.glob('/home/ubuntu/lyrics/*')
-#print files
+sys.path.append( os.path.realpath("%s/.."%os.path.dirname(__file__)) )
+
+from util import data_accessor_util
+from util import mysql_util
+
+
+logging.basicConfig(format='%(asctime)s : %(levelname)s : %(message)s', level=logging.INFO)
+wvModel = gensim.models.KeyedVectors.load_word2vec_format('~/GoogleNews-vectors-negative300.bin', binary=True)
+
 
 # read in stopwords
 stoplist = set(line.strip() for line in open('/home/ubuntu/repo/stopwords.txt'))   
 wordvector = ()
 
-wvModel = gensim.models.KeyedVectors.load_word2vec_format('~/GoogleNews-vectors-negative300.bin', binary=True)
+# pull from sql table 
+q = """SELECT songs.songID, songs.track_id, songs.has_lyrics, genres.genre
+		FROM songs
+		LEFT JOIN genres ON genres.songID = songs.track_id
+		WHERE genres.genre IS NOT NULL
+		AND genres.genre NOT LIKE 'NULL';"""
 
-for f in files:
-	print f
-	with open(f) as fidx:
-		sentences = [word.lower() for line in fidx for word in line.split()]
+data = mysql_util.execute_dict_query(q)
 
-	# remove stop words, lowercase terms, remove periods and parentheses
-	texts = [re.sub(r'[()]', '', word).rstrip('[.,]')  for word in sentences if word not in stoplist]
-	
-	for lyric in texts:                            
-		if lyric in wvModel.vocab:
-			print lyric
-	    	wordvector = np.append(wordvector,  wvModel[lyric], axis = 0)
+for row in data:
+	# check to see if lyrics exist
+	if row['has_lyrics']:
 
-	print wordvector.shape
-	sys.exit()
+		with open("/home/ubuntu/lyrics/"+row['songID']+".lyrics") as fidx:
+			sentences = [word.lower() for line in fidx for word in line.split()]
+
+		# remove stop words, lowercase terms, remove periods and parentheses
+		texts = [re.sub(r'[()]', '', word).rstrip('[.,]')  for word in sentences if word not in stoplist]
+
+		for lyric in texts: 
+			if lyric in wvModel.vocab:
+				wordvector = np.append(wordvector, wvModel[lyric])
+
+		wordvector = np.reshape(wordvector, (wordvector.shape[0]/300, 300))
+		
+		# save out one wordvector
+		file = open('~/wordVectors/'+row['songID']+'.pkl', 'w')
+		pickle.dump(wordvector, file)
+		file.close()
+
+		# quit after one iteration for testing purposes
+		# sys.exit()
 	
