@@ -75,6 +75,25 @@ def prep_data_set(data):
 
 	return results
 
+# Remove fields from feature set
+def prep_lyrics_data_set(data):
+	results = []
+	for d in data:
+		d.pop('id', None)
+		d.pop('has_lyrics', None)
+		d.pop('deleted', None)
+		d.pop('artist_id', None)
+		d.pop('artist_name', None)
+		d.pop('song_title', None)
+		d.pop('track_id', None)
+		d.pop('energy', None)
+		d.pop('is_train_test', None)
+		d.pop('danceability', None)
+
+		results.append(d)
+
+	return results
+
 # Preprocess train and test
 def preprocess_data(train_data, test_data):
 	train_df = pd.DataFrame(train_data)
@@ -233,7 +252,7 @@ def get_data_sets_w_lyrics():
 	data = get_all_data_w_lyrics_raw()
 
 	# prep data
-	results = prep_data_set(data)
+	results = prep_lyrics_data_set(data)
 
 	# split into training and test
 	return split_data_sets_w_lyrics(results)
