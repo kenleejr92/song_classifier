@@ -12,9 +12,6 @@ import pymysql.cursors
 import sys, os
 from tqdm import tqdm
 import time
-# print "__file__:   ", __file__
-# print "os.path.dirname(__file__):   ", os.path.dirname(__file__)
-# print "os.path.dirpath of the parrent of above:   ", os.path.realpath("%s/.."%os.path.dirname(__file__)) 
 sys.path.append( os.path.realpath("%s/.."%os.path.dirname(__file__)) )
 
 from util import data_accessor_util
@@ -43,17 +40,13 @@ DEBUG = 1
 
 # reading the data from sql table using the get_all_data method
 X_train, y_train, train_le, X_test, y_test, test_le = data_accessor_util.get_all_data_sets()
-print "X_train ", type(X_train)
-print "y_train ", type(y_train)
-print "X_train ", np.shape(X_train)
-print "X_test", np.shape(X_test)
-import pdb; pdb.set_trace()
+
 # X = df.drop(['genre'], axis=1)
 # y = df['genre']
 # le = preprocessing.LabelEncoder()
 # y = le.fit_transform(y)
-
-
+X_train = X_train.drop('songID', axis=1)
+X_test = X_test.drop('songID', axis=1)
 h = .02  # step size in the mesh
 # list of methods used, they correspond to the classifiers list
 methods = ["Logistic Regression","Decision Tree", "Random Forest", 
