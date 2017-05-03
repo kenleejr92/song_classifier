@@ -103,7 +103,7 @@ def separate_target_values(df):
 	# Label encodes Y values
 	le = preprocessing.LabelEncoder()
 	Y = pd.DataFrame(le.fit_transform(Y))
-
+	
 	return (X, Y, le)
 
 # 
