@@ -20,8 +20,10 @@ import settings
 import mysql_util
 import pandas as pd
 import itertools
+import math
 
 from sklearn import preprocessing
+from sklearn.utils import shuffle
 
 
 #-------------------------
@@ -93,23 +95,60 @@ def prep_lyrics_data_set(data):
 
 	return results
 
+# Decadize years
+def convert_years_to_decade(data):
+
+	for index, row in data.iterrows():
+		row['year'] = int(math.floor(int(row['year']) / 10.0)) * 10
+
+	print data
+
+# One hot encode date
+def one_hot_encode(data):
+	enc = preprocessing.OneHotEncoder()
+
+	vals = enc.fit_transform(data).toarray()
+
+	print vals
+
+	return vals
+
+# Drop column
+def drop_column(key, data_set):
+	vals = data_set[key]
+
+	data_set = data_set.drop(key, axis=1)
+
+	return (vals, data_set)
+
+# Add column
+def add_column(key, vals, data_set):
+	data_set.insert(0, key, vals)
+
+	return data_set
+
 # Preprocess train and test
 def preprocess_data(train_data, test_data):
 	train_df = pd.DataFrame(train_data)
 	test_df = pd.DataFrame(test_data)
 
+	# Shuffle
+	train_df = shuffle(train_df)
+	test_df = shuffle(test_df)
+
 	# Separate target values
 	(train_X, train_Y, train_le) = separate_target_values(train_df)
 	(test_X, test_Y, test_le) = separate_target_values(test_df)
 
+	# Drop columns
+	(train_X_songs_ids, train_X) = drop_column('songID', train_X)
+	(test_X_songs_ids, test_X) = drop_column('songID', test_X)
+	(train_X_years, train_X) = drop_column('year', train_X)
+	(test_X_years, test_X) = drop_column('year', test_X)
+	(train_X_musicalKeys, train_X) = drop_column('musicalKey', train_X)
+	(test_X_musicalKeys, test_X) = drop_column('musicalKey', test_X)
+
 	# Standardized x values
-	train_x_songs_ids = train_X['songID']
-	test_x_songs_ids = test_X['songID']
-
-	train_X = train_X.drop('songID', axis=1)
-	test_X = test_X.drop('songID', axis=1)
-
-
 	column_headers = list(train_X.columns.values)
 	scaler = preprocessing.StandardScaler()
 	train_X = pd.DataFrame(scaler.fit_transform(train_X))
@@ -118,8 +157,15 @@ def preprocess_data(train_data, test_data):
 	test_X.columns = column_headers
 
 
-	train_X.insert(0, "songID", train_x_songs_ids)
-	test_X.insert(0, "songID", test_x_songs_ids)
+	# Re-add columns back
+	train_X = add_column("year", train_X_years, train_X)
+	test_X = add_column("year", test_X_years, test_X)
+
+	train_X = add_column("musicalKey", train_X_musicalKeys, train_X)
+	test_X = add_column("musicalKey", test_X_musicalKeys, test_X)
+
+	train_X = add_column("songID", train_X_songs_ids, train_X)
+	test_X = add_column("songID", test_X_songs_ids, test_X)
 
 	return (train_X, train_Y, train_le, test_X, test_Y, test_le)
 
@@ -183,8 +229,8 @@ def split_all_data_sets(data):
 	test_data.extend(metal[15000:18000])
 	test_data.extend(pop[30000:33000])
 
-	print len(train_data)
-	print len(test_data)
+	# print len(train_data)
+	# print len(test_data)
 
 	# for d in train_data:
 	# 	q = "UPDATE songs set is_train_test = 1 where id = %d"%(d['id'])
@@ -295,5 +341,24 @@ def get_all_data():
 
     return df
 
+# Convert train and test sets to numpy
+def convert_data_sets_to_numpy(train_X, train_Y, test_X, test_Y):
+
+	# drop song id
+	train_X = train_X.drop('songID', axis=1)
+	test_X = test_X.drop('songID', axis=1)
+
+	# Convert all to matrices
+	train_X = train_X.as_matrix()
+	train_Y = train_Y.as_matrix()
+	test_X = test_X.as_matrix()
+	test_Y = test_Y.as_matrix()
+
+	# Reshape
+	train_Y = train_Y.reshape((train_Y.shape[0],))
+	test_Y = test_Y.reshape((test_Y.shape[0],))
+
+	return (train_X, train_Y, test_X, test_Y)
+
 if __name__=="__main__":
-    print get_data_sets_w_lyrics()
+   	print get_data_sets_w_lyrics()
