@@ -49,7 +49,7 @@ clf = AdaBoostClassifier(\
 	algorithm='SAMME.R', random_state=None)
 
 # use a full grid search over all parameters
-param_grid = {"n_estimators": np.arrange(20,100,20),
+param_grid = {"n_estimators": np.arange(20,100,20),
 	"learning_rate": [0.01, 0.1, 1]}
 
 # run grid search
