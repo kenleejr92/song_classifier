@@ -24,11 +24,12 @@ import settings
 #	SQL environments
 #-------------------------
 
-REMOTE = False	### CHANGE TO SWITCH BETWEEN LOCAL AND REMOTE
+REMOTE = True	### CHANGE TO SWITCH BETWEEN LOCAL AND REMOTE
 
 
 HOST_LOCAL = "localhost"
 HOST_REMOTE = "54.209.128.159"
+PASSWORD_REMOTE = 'root'
 HOST = HOST_REMOTE if REMOTE else HOST_LOCAL
 
 PASSWORD_LOCAL = settings.sql_password
