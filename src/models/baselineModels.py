@@ -12,9 +12,6 @@ import pymysql.cursors
 import sys, os
 from tqdm import tqdm
 import time
-# print "__file__:   ", __file__
-# print "os.path.dirname(__file__):   ", os.path.dirname(__file__)
-# print "os.path.dirpath of the parrent of above:   ", os.path.realpath("%s/.."%os.path.dirname(__file__)) 
 sys.path.append( os.path.realpath("%s/.."%os.path.dirname(__file__)) )
 
 from util import data_accessor_util
