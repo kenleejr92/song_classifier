@@ -1,5 +1,7 @@
 from sklearn import preprocessing
 from sklearn.linear_model import LogisticRegression
+from sklearn.ensemble import RandomForestClassifier
+
 import pandas as pd
 import numpy as np
 import sys, os
@@ -15,8 +17,6 @@ y = df['genre']    # DataFrame storing the outputs
 le = preprocessing.LabelEncoder()
 y = pd.DataFrame(le.fit_transform(y))
 
-print X.head()
-
 msk = np.random.rand(len(df)) < 0.8
 X_train = X[msk]
 X_test = X[~msk]
@@ -24,7 +24,7 @@ X_test = X[~msk]
 y_train = y[msk]
 y_test = y[~msk]
 
-clf = LogisticRegression()
+clf = RandomForestClassifier()
 
 clf.fit(X_train,y_train)
 preds = clf.predict(X_test)
