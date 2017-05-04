@@ -66,7 +66,6 @@ y_test_predict = grid_search.predict(X_test)
 y_train_predict = grid_search.predict(X_train)
 test_accuracy = accuracy_score(y_test, y_test_predict)
 train_accuracy = accuracy_score(y_train, y_train_predict)
-
 end = time.time()
 elasped_time = end - start
 
@@ -77,15 +76,14 @@ print "train accuracy of method %s is %s" % (method, train_accuracy)
 print "test accuracy of method %s is %s" % (method, test_accuracy)
 print classification_report(y_test, y_test_predict, target_names=classes)
 entry1 = "train accuracy of " + method + " = " + str(train_accuracy) + "\n"
-entry2 = "test accuracy of " + method + " = " + str(test_accuracy) + "\n\n\n"
+entry2 = "test accuracy of " + method + " = " + str(test_accuracy) + "\n"
 myFile = open("GradientBoostingClassifier.txt","a")
 myFile.write(entry1)
 myFile.write(entry2)
 print >> myFile, classification_report(y_test, y_test_predict, target_names=classes)
-print >> myFile, "\n\n\n"
-print >> myFile, "best params: ", grid_search.best_params_
+
 myFile.close()
-myFile.close()
+
 
 
 

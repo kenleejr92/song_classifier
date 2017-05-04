@@ -1,5 +1,5 @@
 """
-linear SVM model
+AdaBoosClassifer model
 
 - Performs SVM to classify the data
 
@@ -39,17 +39,19 @@ classes = list(test_le.classes_)
 (X_train, y_train, X_test, y_test) = data_accessor_util.convert_data_sets_to_numpy(X_train, y_train, X_test, y_test)
 
 # method used
-method = "LinearSVM"
+method = "LinearSVC"
 
 # iterate over classifiers
 if DEBUG == 1: print "now performing: ", method
 start = time.time()
-clf = LinearSVC(dual=True, tol=0.0001, C=1.0,\
-    multi_class='ovr', fit_intercept=True, intercept_scaling=1, class_weight=None,\
-    verbose=0, random_state=None, max_iter=10)
+clf = LinearSVC(\
+	penalty='l2', loss='squared_hinge', dual=True, tol=0.0001, C=1.0, multi_class='ovr', \
+	fit_intercept=True, intercept_scaling=1, class_weight=None, verbose=0, \
+	random_state=None, max_iter=1000)
 
 # use a full grid search over all parameters
-param_grid = {"penalty": ['l2']}
+param_grid = {"C": [0.1, 1.0, 5]}
+
 # run grid search
 grid_search = GridSearchCV(clf, param_grid=param_grid)
 grid_search.fit(X_train, y_train)
@@ -68,11 +70,11 @@ print "execution time of %s was %s seconds" %(method, elasped_time)
 print "train accuracy of method %s is %s" % (method, train_accuracy)
 print "test accuracy of method %s is %s" % (method, test_accuracy)
 print classification_report(y_test, y_test_predict, target_names=classes)
-entry1 = "train accuracy of " + method + " = " + str(train_accuracy) + "\n"
-entry2 = "test accuracy of " + method + " = " + str(test_accuracy) + "\n\n\n"
+
 myFile = open("LinearSVC.txt","a")
-myFile.write(entry1)
-myFile.write(entry2)
+print >> myFile, "execution time of %s was %s seconds\n" %(method, elasped_time)
+print >> myFile, "train accuracy of method %s is %s \n" % (method, train_accuracy)
+print >> myFile, "test accuracy of method %s is %s \n" % (method, test_accuracy)
 print >> myFile, classification_report(y_test, y_test_predict, target_names=classes)
 print >> myFile, "\n\n\n"
 print >> myFile, "best params: ", grid_search.best_params_

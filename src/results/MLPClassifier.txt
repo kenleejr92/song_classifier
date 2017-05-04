@@ -1,0 +1,22 @@
+execution time of MLPClassifier was 164.382066965 seconds
+
+train accuracy of method MLPClassifier is 0.38749375 
+
+test accuracy of method MLPClassifier is 0.419611111111 
+
+                       precision    recall  f1-score   support
+
+  alternative or folk       0.24      0.23      0.24      3000
+  classic rock or pop       0.26      0.27      0.26      3000
+dance and electronica       0.45      0.67      0.54      3000
+     hip-hop/soul/r&b       0.63      0.43      0.51      3000
+                metal       0.59      0.76      0.67      3000
+                  pop       0.30      0.15      0.20      3000
+
+          avg / total       0.41      0.42      0.40     18000
+
+
+
+
+
+best params:  {'hidden_layer_sizes': 15}

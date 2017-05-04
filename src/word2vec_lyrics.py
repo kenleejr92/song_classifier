@@ -3,7 +3,7 @@
 import gensim, logging, os, re, glob, sys
 import numpy as np
 import pickle
-#from tqdm import tqdm	
+from tqdm import tqdm	
 
 sys.path.append( os.path.realpath("%s/.."%os.path.dirname(__file__)) )
 
@@ -30,15 +30,16 @@ q = """SELECT songs.songID, songs.track_id, songs.has_lyrics, genres.genre
 data = mysql_util.execute_dict_query(q)
 '''
 
-for idNum in np.arange(int(sys.argv[1]),int(sys.argv[2])):
+for idNum in tqdm(np.arange(int(sys.argv[1]),int(sys.argv[2]))):
 	# check to see if lyrics exist
 
 	songID = train_X['songID'][idNum]
+	songID = 'SOELATB12D021903EE'
 	wordvector = ()
 
 
 	#print "/home/ubuntu/wordVectors/"+songID+".pkl"
-	if not os.path.exists("/home/ubuntu/wordVectors/"+songID+".npy"):
+	if os.path.exists("/home/ubuntu/wordVectors/"+songID+".npy"):
 
 		with open("/home/ubuntu/lyrics/"+songID+".lyrics") as fidx:
 			sentences = [word.lower() for line in fidx for word in line.split()]
@@ -46,17 +47,19 @@ for idNum in np.arange(int(sys.argv[1]),int(sys.argv[2])):
 	# remove stop words, lowercase terms, remove periods and parentheses
 		texts = [re.sub(r'[()]', '', word).rstrip('[.,]')  for word in sentences if word not in stoplist]
 
+		print texts
 		count = 0
 		for lyric in texts: 
 			if count > 29:
 				break
 			if lyric in wvModel.vocab:
+				print lyric
 				wordvector = np.append(wordvector, wvModel[lyric])
 				count += 1
-
+		sys.exit()
 		if count > 0:
 			wordvector = np.reshape(wordvector, (wordvector.shape[0]/300, 300))
-			np.save('/home/ubuntu/wordVectors/'+songID+'.npy', wordvector, allow_pickle=False)
+			#np.save('/home/ubuntu/wordVectors/'+songID+'.npy', wordvector, allow_pickle=False)
 
 		# save out one wordvector
 		#file = open('/home/ubuntu/wordVectors/'+songID+'.pkl', 'w')

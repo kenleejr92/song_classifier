@@ -1,3 +1,8 @@
+execution time of AdaBoostClassifier was 863.155320883 seconds
+train accuracy of method AdaBoostClassifier is 0.389102857143
+test accuracy of method AdaBoostClassifier is 0.387952380952
+
+
 train accuracy of AdaBoostClassifier = 0.389102857143
 test accuracy of AdaBoostClassifier = 0.387952380952
 
@@ -14,3 +19,8 @@ dance and electronica       0.50      0.52      0.51      3000
 
           avg / total       0.41      0.39      0.38     21000
 
+
+
+
+
+best params:  {'n_estimators': 80, 'learning_rate': 1}
