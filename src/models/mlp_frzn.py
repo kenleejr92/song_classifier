@@ -19,6 +19,7 @@ from sklearn.model_selection import train_test_split
 from sklearn import preprocessing
 from sklearn.metrics import accuracy_score, classification_report
 from sklearn.model_selection import GridSearchCV
+import PCA
 
 
 # ----------------
@@ -28,15 +29,12 @@ from sklearn.neural_network import MLPClassifier
 
 DEBUG = 1
 
+
+
 # reading the data from sql table using the get_all_data method
-
-X_train, y_train, train_le, X_test, y_test, test_le = data_accessor_util.get_all_data_sets()
-import pdb; pdb.set_trace()
+var_percentage = 0.99
+(X_train, y_train, train_le, X_test, y_test, test_le) = PCA.read_data_perform_pca(var_percentage)
 classes = list(test_le.classes_)
-# print test_le.inverse_transform([0, 1, 2, 3, 4, 5, 6])
-
-# Converting data to numpy
-(X_train, y_train, X_test, y_test) = data_accessor_util.convert_data_sets_to_numpy(X_train, y_train, X_test, y_test)
 
 # method used
 method = "MLPClassifier"
