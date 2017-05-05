@@ -19,12 +19,11 @@ from sklearn.model_selection import train_test_split
 from sklearn import preprocessing
 from sklearn.metrics import accuracy_score, classification_report
 from sklearn.model_selection import GridSearchCV
-
-
+from xgboost import XGBClassifier
 # ----------------
 #    models
 # ----------------
-from xgboost import XGBClassifier
+
 
 DEBUG = 1
 
@@ -47,7 +46,7 @@ start = time.time()
 
 # fit model no training data
 
-clf = XGBClassifier(\
+clf = xgboost.XGBClassifier(\
 	max_depth=3, learning_rate=0.1, n_estimators=100, silent=True, objective='binary:logistic', \
 	nthread=-1, gamma=0, min_child_weight=1, max_delta_step=0, subsample=1, colsample_bytree=1, \
 	colsample_bylevel=1, reg_alpha=0, reg_lambda=1, scale_pos_weight=1, base_score=0.5, seed=0, missing=None)
