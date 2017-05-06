@@ -23,6 +23,11 @@ from sklearn.metrics import accuracy_score, classification_report
 from sklearn.model_selection import GridSearchCV
 from sklearn.decomposition import PCA
 
+
+
+#--------------------
+#      Functions
+#--------------------
 def print_pca_variance():
 	# reading the data from sql table using the get_all_data method
 	X_train, y_train, train_le, X_test, y_test, test_le = data_accessor_util.get_all_data_sets()
