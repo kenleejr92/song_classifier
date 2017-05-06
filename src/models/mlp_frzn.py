@@ -28,7 +28,8 @@ import PCA
 from sklearn.neural_network import MLPClassifier
 
 DEBUG = 1
-
+# method used
+method = "MLPClassifier"
 
 
 # reading the data from sql table using the get_all_data method
@@ -36,8 +37,6 @@ var_percentage = 0.99
 (X_train, y_train, train_le, X_test, y_test, test_le) = PCA.read_data_perform_pca(var_percentage)
 classes = list(test_le.classes_)
 
-# method used
-method = "MLPClassifier"
 
 # iterate over classifiers
 if DEBUG == 1: print "now performing: ", method
