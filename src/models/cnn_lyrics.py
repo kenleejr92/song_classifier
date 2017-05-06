@@ -48,7 +48,7 @@ filters = 25
 kernel_size = 3
 hidden_dims = 25
 maxlen = 30
-num_of_epochs = 3
+num_of_epochs = 1
 
 # we add a Convolution1D, which will learn filters
 # word group filters of size filter_length:
@@ -61,7 +61,7 @@ model.add(Conv1D(filters,
                  input_shape=(30, 300)))
 model.add(MaxPooling1D(pool_size=2))
 '''
-model.add(LSTM(10, input_length=30, input_dim=300))
+model.add(LSTM(500, input_length=30, input_dim=300))
 # We add a vanilla hidden layer:
 #model.add(Dense(hidden_dims, activation = 'relu'))
 #model.add(Dropout(0.2))
