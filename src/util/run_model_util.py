@@ -15,15 +15,24 @@ import sys, os
 import time
 from tqdm import tqdm
 sys.path.append( os.path.realpath("%s/.."%os.path.dirname(__file__)) )
-from util import data_accessor_util
 from sklearn.model_selection import train_test_split
 from sklearn import preprocessing
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
 from sklearn.model_selection import GridSearchCV
+from time import gmtime, strftime
+
+
+# ----------------
+#    user defined packages
+# ----------------
+from util import data_accessor_util
 from util import PCA
+
+
 
 def run_model(clf, param_grid, method, file_name):
 	DEBUG = 1
+
 	# reading the data from sql table using the get_all_data method
 	var_percentage = 0.95   # percentage of variance retained by PCA
 	(X_train, y_train, train_le, X_test, y_test, test_le) = \
@@ -54,10 +63,13 @@ def run_model(clf, param_grid, method, file_name):
 
 	# create the file for storing results if don't exist
 	# remove existing file and recreate 
-	file = open(file_name, "w")
+	path_to_file = "./results/" + file_name
+	file = open(path_to_file, "w")
 	file.close()
 
-	myFile = open(file_name,"a")
+	myFile = open(path_to_file,"a")
+	print >> myFile, "current time: ", time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime()), "\n"
+	print >> myFile, "model used: ", method
 	print >> myFile, "percentage variance retained by PCA: %s \n" % (var_percentage)
 	print >> myFile, "execution time of %s was %s seconds\n" % (method, elasped_time)
 	print >> myFile, "train accuracy of method %s is %s \n" % (method, train_accuracy)
@@ -72,7 +84,7 @@ def run_model(clf, param_grid, method, file_name):
 	print >> myFile, "\n\n\n"
 	print >> myFile, "best estimator: \n", grid_search.best_estimator_, "\n"
 	print >> myFile, "\n\n\n"
-	print >> myFile, "best estimator: \n", grid_search.best_estimator_, "\n"
+	print >> myFile, "best score: \n", grid_search.best_score_, "\n"
 	print >> myFile, "\n\n\n"
 	print >> myFile, "number of cross-validation splits: \n", \
 						grid_search.n_splits_, "\n"
