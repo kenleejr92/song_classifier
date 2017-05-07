@@ -1,0 +1,23 @@
+execution time of GradientBoostingClassifier was 20434.8137698 seconds
+
+train accuracy of method GradientBoostingClassifier is 0.447245714286 
+
+test accuracy of method GradientBoostingClassifier is 0.431095238095 
+
+                       precision    recall  f1-score   support
+
+  alternative or folk       0.29      0.29      0.29      3000
+  classic rock or pop       0.30      0.36      0.33      3000
+              country       0.50      0.23      0.32      3000
+dance and electronica       0.56      0.55      0.56      3000
+     hip-hop/soul/r&b       0.52      0.61      0.56      3000
+                metal       0.70      0.60      0.64      3000
+                  pop       0.29      0.38      0.33      3000
+
+          avg / total       0.45      0.43      0.43     21000
+
+
+
+
+
+best params:  {'n_estimators': 200, 'max_depth': 3}

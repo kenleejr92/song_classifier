@@ -15,9 +15,15 @@ from xgboost import XGBClassifier
 from sklearn.preprocessing import label_binarize
 from util import load_data
 
+
 X_train, X_test, y_train, y_test, classes = load_data.load_all()
 
+
 print "done loading"
+
+classes = list(test_le.classes_)
+
+(X_train, y_train, X_test, y_test) = data_accessor_util.convert_data_sets_to_numpy(X_train, y_train, X_test, y_test)
 
 y_train = label_binarize(y_train, classes = classes)
 

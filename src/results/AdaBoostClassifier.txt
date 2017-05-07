@@ -1,0 +1,26 @@
+execution time of AdaBoostClassifier was 863.155320883 seconds
+train accuracy of method AdaBoostClassifier is 0.389102857143
+test accuracy of method AdaBoostClassifier is 0.387952380952
+
+
+train accuracy of AdaBoostClassifier = 0.389102857143
+test accuracy of AdaBoostClassifier = 0.387952380952
+
+
+                       precision    recall  f1-score   support
+
+  alternative or folk       0.25      0.23      0.24      3000
+  classic rock or pop       0.27      0.34      0.30      3000
+              country       0.48      0.15      0.23      3000
+dance and electronica       0.50      0.52      0.51      3000
+     hip-hop/soul/r&b       0.46      0.56      0.51      3000
+                metal       0.65      0.56      0.60      3000
+                  pop       0.26      0.36      0.30      3000
+
+          avg / total       0.41      0.39      0.38     21000
+
+
+
+
+
+best params:  {'n_estimators': 80, 'learning_rate': 1}
