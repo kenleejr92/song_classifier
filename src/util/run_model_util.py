@@ -97,7 +97,8 @@ def run_model_lyrics(clf, param_grid, method, file_name):
 	DEBUG = 1
 
 	# read lyrics data
-	file_name2 = "lyrics_feature_df3.pickle"
+	if DEBUG == 1: print "reading the data .... \n"
+	file_name2 = "lyrics_feature_df.pickle"
 	path_to_file2 = "/home/ubuntu/repo/src/data/" + file_name2
 	lyrics_feature_df = pd.read_pickle(path_to_file2)
 	columns = lyrics_feature_df.columns
@@ -111,7 +112,7 @@ def run_model_lyrics(clf, param_grid, method, file_name):
 	X = X.drop(columns[-1], axis = 1)
 	y_np = np.array(y)
 	X_np = np.array(X)
-	train_cut_off = 700
+	train_cut_off = 68000
 	feature_cut_off = 1000
 	X_train = X_np[:train_cut_off,:feature_cut_off]
 	X_test = X_np[train_cut_off:,:feature_cut_off]
@@ -147,7 +148,7 @@ def run_model_lyrics(clf, param_grid, method, file_name):
 	path_to_file = "./results/" + file_name
 	file = open(path_to_file, "w")
 	file.close()
-
+	if DEBUG ==1 : print "writting to file ....\n"
 	myFile = open(path_to_file,"a")
 	print >> myFile, "current time: ", time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime()), "\n"
 	print >> myFile, "model used: ", method

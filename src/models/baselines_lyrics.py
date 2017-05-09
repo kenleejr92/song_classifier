@@ -39,26 +39,25 @@ from sklearn.ensemble import GradientBoostingClassifier
 
 
 
+def xgboost_func():
+	method = "XGBClassifier"
+	# create file_name for saving results
+	possibles = globals().copy()
+	possibles.update(locals())
+	method_func = possibles.get(method)
+	file_name = method + "_lyrics" +  ".txt"
 
-method = "XGBClassifier"
-# create file_name for saving results
-possibles = globals().copy()
-possibles.update(locals())
-method_func = possibles.get(method)
-file_name = method + "_lyrics" +  ".txt"
+	# setting the model parameters
+	clf = method_func(
+		max_depth=3, learning_rate=0.1, n_estimators=100, silent=True, objective='multi:softmax', 
+		nthread=5, gamma=0, min_child_weight=1, max_delta_step=0, subsample=1, colsample_bytree=1, 
+		colsample_bylevel=1, reg_alpha=0, reg_lambda=1, scale_pos_weight=1, base_score=0.5, seed=0, missing=None)
 
-# setting the model parameters
-clf = method_func(
-	max_depth=3, learning_rate=0.1, n_estimators=100, silent=True, objective='multi:softmax', 
-	nthread=5, gamma=0, min_child_weight=1, max_delta_step=0, subsample=1, colsample_bytree=1, 
-	colsample_bylevel=1, reg_alpha=0, reg_lambda=1, scale_pos_weight=1, base_score=0.5, seed=0, missing=None)
+	# use a full grid search over following parameters
+	param_grid = {"max_depth": [3, 10],
+	              "n_estimators": [100, 200]}
 
-# use a full grid search over following parameters
-param_grid = {"max_depth": [3, 10],
-              "n_estimators": [100, 200]}
-
-run_model_util.run_model_lyrics(clf, param_grid, method, file_name)
-
+	run_model_util.run_model_lyrics(clf, param_grid, method, file_name)
 
 
 def grad_boosting_func():
@@ -120,9 +119,7 @@ def mlp_func():
 		beta_1=0.9, beta_2=0.999, epsilon=1e-08)
 
 	# use a full grid search over all parameters
-	param_grid = {"hidden_layer_sizes": [(15,6),(40,6)],
-	              "activation": ['relu', 'logistic']
-	}
+	param_grid = {"hidden_layer_sizes": [(15,6),(1000,20,6)]}
 	run_model_util.run_model_lyrics(clf, param_grid, method, file_name)
 
 
@@ -164,9 +161,7 @@ def random_forest_func():
 		warm_start=False, class_weight=None)
 
 	# use a full grid search over all parameters
-	param_grid = {"n_estimators": (10,100), 
-	              "max_depth": (3,10),
-                  "criterion": ["gini", "entropy"]}
+	param_grid = {"max_depth": [100,500]}
 	run_model_util.run_model_lyrics(clf, param_grid, method, file_name)
 
 
@@ -187,3 +182,11 @@ def AdaBoost_func():
 	param_grid = {"n_estimators": np.arange(20,140,40),
 	              "learning_rate": [ 0.1, 1]}
 	run_model_util.run_model_lyrics(clf, param_grid, method, file_name)
+
+
+def main():
+	methods = [xgboost_func, grad_boosting_func, linear_svm_func, logistic_reg_func, random_forest_func, AdaBoost_func]
+	for method in methods:
+
+if __name__ == "__main__":
+    main()

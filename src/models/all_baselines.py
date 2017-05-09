@@ -187,3 +187,17 @@ def AdaBoost_func():
 	param_grid = {"n_estimators": np.arange(20,140,40),
 	              "learning_rate": [ 0.1, 1]}
 	run_model_util.run_model(clf, param_grid, method, file_name)
+
+def multiple_funcs():
+	possibles = globals().copy()
+	possibles.update(locals())
+	method_func = possibles.get(method)
+    method_func()
+	
+
+# def main():
+# 	methods = [xgboost_func, grad_boosting_func, linear_svm_func, logistic_reg_func, random_forest_func, AdaBoost_func]
+# 	for method in methods:
+
+# if __name__ == "__main__":
+#     main()

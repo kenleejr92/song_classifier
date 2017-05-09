@@ -40,7 +40,6 @@ for idNum in tqdm(np.arange(0, train_X.shape[0], 1)):
 	# remove stop words, lowercase terms, remove periods and parentheses
 		texts = [re.sub(r'[()]', '', word).rstrip('[.,]')  for word in sentences if word not in stoplist]
 		for lyric in texts: 
-			if lyric in wvModel.vocab:
 				if "'" not in lyric:
 					document.extend([lyric])
 
