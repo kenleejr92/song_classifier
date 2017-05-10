@@ -36,7 +36,8 @@ from sklearn.metrics.classification import accuracy_score, log_loss
 from sklearn.gaussian_process.kernels import RBF
 from xgboost import XGBClassifier
 from sklearn.ensemble import GradientBoostingClassifier
-
+from joblib import Parallel, delayed
+import multiprocessing
 
 
 def xgboost_func():
@@ -49,13 +50,12 @@ def xgboost_func():
 
 	# setting the model parameters
 	clf = method_func(
-		max_depth=3, learning_rate=0.1, n_estimators=100, silent=True, objective='multi:softmax', 
+		max_depth=None, learning_rate=0.1, n_estimators=100, silent=True, objective='multi:softmax', 
 		nthread=5, gamma=0, min_child_weight=1, max_delta_step=0, subsample=1, colsample_bytree=1, 
 		colsample_bylevel=1, reg_alpha=0, reg_lambda=1, scale_pos_weight=1, base_score=0.5, seed=0, missing=None)
 
 	# use a full grid search over following parameters
-	param_grid = {"max_depth": [3, 10],
-	              "n_estimators": [100, 200]}
+	param_grid = {"max_depth": [100, 400]}
 
 	run_model_util.run_model_lyrics(clf, param_grid, method, file_name)
 
@@ -77,7 +77,7 @@ def grad_boosting_func():
 	    warm_start=False, presort='auto')
 
 	# use a full grid search over following parameters
-	param_grid = {"max_depth": [3, 10],
+	param_grid = {"max_depth": [50,500],
 	              "n_estimators": [50, 200]}
 
 	run_model_util.run_model_lyrics(clf, param_grid, method, file_name)
@@ -98,7 +98,7 @@ def linear_svm_func():
 		class_weight=None, verbose=0, random_state=None, max_iter=1000)
 
 	# use a full grid search over following parameters
-	param_grid = {"C": [0.5, 1.0, 5.0]}
+	param_grid = {"C": [0.5, 1.0]}
 	run_model_util.run_model_lyrics(clf, param_grid, method, file_name)
 
 
@@ -119,7 +119,8 @@ def mlp_func():
 		beta_1=0.9, beta_2=0.999, epsilon=1e-08)
 
 	# use a full grid search over all parameters
-	param_grid = {"hidden_layer_sizes": [(15,6),(1000,20,6)]}
+	param_grid = {"hidden_layer_sizes": [(2000,20,4)], 
+	              "activation": ['relu', 'logistic']}
 	run_model_util.run_model_lyrics(clf, param_grid, method, file_name)
 
 
@@ -133,14 +134,13 @@ def logistic_reg_func():
 
 	# setting the model parameters
 	clf = method_func(
-		penalty='l2', dual=False, tol=0.0001, C=1.0, fit_intercept=True,
+		penalty='l1', dual=False, tol=0.0001, C=1.0, fit_intercept=True,
 		intercept_scaling=1, class_weight=None, random_state=None,
 		solver='liblinear', max_iter=100, multi_class='ovr',
 		verbose=0, warm_start=False, n_jobs=1)
 
 	# use a full grid search over all parameters
-	param_grid = {"C": [0.1, 1.0, 10.0],
-	              "penalty": ['l2', 'l1']}
+	param_grid = {"C": [0.1, 1.0, 10.0]}
 	run_model_util.run_model_lyrics(clf, param_grid, method, file_name)
 
 
@@ -161,7 +161,8 @@ def random_forest_func():
 		warm_start=False, class_weight=None)
 
 	# use a full grid search over all parameters
-	param_grid = {"max_depth": [100,500]}
+	param_grid = {"max_depth": [50,500], 
+	              "max_features": [10, 50]}
 	run_model_util.run_model_lyrics(clf, param_grid, method, file_name)
 
 
@@ -179,14 +180,25 @@ def AdaBoost_func():
 		algorithm='SAMME.R', random_state=None)
 
 	# use a full grid search over all parameters
-	param_grid = {"n_estimators": np.arange(20,140,40),
-	              "learning_rate": [ 0.1, 1]}
+	param_grid = {"n_estimators": np.arange(60,140,40)}
 	run_model_util.run_model_lyrics(clf, param_grid, method, file_name)
+
+# this function runs multiple models
+def multiple_funcs(method):
+	possibles = globals().copy()
+	possibles.update(locals())
+	method_func = possibles.get(method)
+	clf = method_func()
+	clf
 
 
 def main():
-	methods = [xgboost_func, grad_boosting_func, linear_svm_func, logistic_reg_func, random_forest_func, AdaBoost_func]
-	for method in methods:
-
+	methods = ['xgboost_func', 'mlp_func']
+	# inputs = np.arange(0, all_data_X.shape[0], 1)
+	range_limit = len(methods)
+	inputs = np.arange(0, range_limit, 1)
+	num_cores = 15 # multiprocessing.cpu_count()
+	Parallel(n_jobs=num_cores)(delayed(multiple_funcs)(methods[i]) for i in inputs)
+	
 if __name__ == "__main__":
     main()

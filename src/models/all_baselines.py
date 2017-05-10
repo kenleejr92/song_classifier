@@ -184,20 +184,27 @@ def AdaBoost_func():
 		algorithm='SAMME.R', random_state=None)
 
 	# use a full grid search over all parameters
-	param_grid = {"n_estimators": np.arange(20,140,40),
+	param_grid = {"n_estimators": np.arange(20,180,40),
 	              "learning_rate": [ 0.1, 1]}
 	run_model_util.run_model(clf, param_grid, method, file_name)
 
-def multiple_funcs():
+# this function runs multiple models
+def multiple_funcs(method):
 	possibles = globals().copy()
 	possibles.update(locals())
 	method_func = possibles.get(method)
-    method_func()
+	clf = method_func()
+	clf
 	
 
-# def main():
-# 	methods = [xgboost_func, grad_boosting_func, linear_svm_func, logistic_reg_func, random_forest_func, AdaBoost_func]
-# 	for method in methods:
+def main():
+	# methods = [xgboost_func, grad_boosting_func, linear_svm_func, logistic_reg_func, random_forest_func, AdaBoost_func]
+	methods = ['AdaBoost_func']
+	# inputs = np.arange(0, all_data_X.shape[0], 1)
+	range_limit = len(methods)
+	inputs = np.arange(0, range_limit, 1)
+	num_cores = 5 # multiprocessing.cpu_count()
+	AdaBoost_func()
 
-# if __name__ == "__main__":
-#     main()
+if __name__ == "__main__":
+    main()

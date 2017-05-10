@@ -113,9 +113,9 @@ def run_model_lyrics(clf, param_grid, method, file_name):
 	y_np = np.array(y)
 	X_np = np.array(X)
 	train_cut_off = 68000
-	feature_cut_off = 1000
-	X_train = X_np[:train_cut_off,:feature_cut_off]
-	X_test = X_np[train_cut_off:,:feature_cut_off]
+	feature_range = np.arange(100, 500)
+	X_train = X_np[:train_cut_off, feature_range]
+	X_test = X_np[train_cut_off:, feature_range]
 	y_train = y_np[:train_cut_off]
 	y_test = y_np[train_cut_off:]
 
