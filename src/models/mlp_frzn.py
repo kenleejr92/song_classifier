@@ -1,7 +1,7 @@
 """
 AdaBoosClassifer model
 
-- Performs AdaBoost to classify the data
+- Performs MLP to classify the data
 
 @author - Farzan Memarian
 """
@@ -19,38 +19,37 @@ from sklearn.model_selection import train_test_split
 from sklearn import preprocessing
 from sklearn.metrics import accuracy_score, classification_report
 from sklearn.model_selection import GridSearchCV
+import PCA
 
 
 # ----------------
 #    models
 # ----------------
-from sklearn.ensemble import AdaBoostClassifier
+from sklearn.neural_network import MLPClassifier
 
 DEBUG = 1
+# method used
+method = "MLPClassifier"
+
 
 # reading the data from sql table using the get_all_data method
-
-X_train, y_train, train_le, X_test, y_test, test_le = data_accessor_util.get_all_data_sets()
-
+var_percentage = 0.99
+(X_train, y_train, train_le, X_test, y_test, test_le) = PCA.read_data_perform_pca(var_percentage)
 classes = list(test_le.classes_)
-# print test_le.inverse_transform([0, 1, 2, 3, 4, 5, 6])
 
-# Converting data to numpy
-(X_train, y_train, X_test, y_test) = data_accessor_util.convert_data_sets_to_numpy(X_train, y_train, X_test, y_test)
-
-# method used
-method = "AdaBoostClassifier"
 
 # iterate over classifiers
 if DEBUG == 1: print "now performing: ", method
 start = time.time()
-clf = AdaBoostClassifier(\
-	base_estimator=None, n_estimators=50, learning_rate=1.0, \
-	algorithm='SAMME.R', random_state=None)
+clf = MLPClassifier(\
+	activation='relu', solver='adam', alpha=0.0001, \
+	batch_size='auto', learning_rate='constant', learning_rate_init=0.001, power_t=0.5, \
+	max_iter=200, shuffle=True, random_state=None, tol=0.0001, verbose=False, warm_start=False,\
+	momentum=0.9, nesterovs_momentum=True, early_stopping=False, validation_fraction=0.1, \
+	beta_1=0.9, beta_2=0.999, epsilon=1e-08)
 
 # use a full grid search over all parameters
-param_grid = {"n_estimators": np.arange(20,100,20),
-	"learning_rate": [0.01, 0.1, 1]}
+param_grid = {"hidden_layer_sizes": (15,6)}
 
 # run grid search
 grid_search = GridSearchCV(clf, param_grid=param_grid)
@@ -64,14 +63,14 @@ train_accuracy = accuracy_score(y_train, y_train_predict)
 end = time.time()
 elasped_time = end - start
 
-file = open("AdaBoostClassifier.txt","w")
+file = open("MLPClassifier.txt","w")
 file.close()
 print "execution time of %s was %s seconds" %(method, elasped_time)
 print "train accuracy of method %s is %s" % (method, train_accuracy)
 print "test accuracy of method %s is %s" % (method, test_accuracy)
 print classification_report(y_test, y_test_predict, target_names=classes)
 
-myFile = open("AdaBoostClassifier.txt","a")
+myFile = open("MLPClassifier.txt","a")
 print >> myFile, "execution time of %s was %s seconds\n" %(method, elasped_time)
 print >> myFile, "train accuracy of method %s is %s \n" % (method, train_accuracy)
 print >> myFile, "test accuracy of method %s is %s \n" % (method, test_accuracy)
