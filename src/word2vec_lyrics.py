@@ -99,4 +99,3 @@ for idNum in np.arange(int(sys.argv[1]),int(sys.argv[2])):
 		
 	# quit after one iteration for testing purposes
 	# sys.exit()
-	
